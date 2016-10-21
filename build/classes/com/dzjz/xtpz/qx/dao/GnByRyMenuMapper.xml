@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dzjz.xtpz.qx.dao.GnByRyMenuDao">
+
+	<resultMap id="gnbyryMap" type="java.util.HashMap">
+		<result property="flbm" column="flbm" />
+		<result property="flmc" column="flmc" />
+		<result property="fflbm" column="fflbm" />
+		<result property="dwbm" column="dwbm" />
+		<result property="flxh" column="flxh" />
+		<result property="gnct" column="gnct" />
+	</resultMap>
+	<!-- 查询人员权限功能主菜单 -->
+	<select id ="gnbyry" parameterType= "java.util.HashMap"  resultMap="gnbyryMap">  
+	  select distinct flbm,flmc,fflbm,dwbm,flxh,gnct from 
+       ( select a.flbm,a.flmc,a.fflbm,a.dwbm,a.flxh,'' gnct,'' jsbm, '' bmbm From XT_QX_GNFL  a where a.sfsc='N'  
+      union all  
+    select b.gnbm,b.gnmc,b.flbm,b.dwbm,b.gnxh,b.gnct,a.jsbm,a.bmbm from xt_qx_jsgnfp  a 
+       join xt_qx_gndy  b on a.gnbm=b.gnbm  right join XT_QX_RYJSFP c on
+       (a.jsbm = c.jsbm and a.dwbm=c.dwbm and a.bmbm=c.bmbm)  where c.DWBM=#{dwbm} and c.bmbm=#{bmbm} and c.jsbm in  
+      																 <foreach item="item" index="index" collection="jsbm" open="(" separator="," close=")">  
+ 																						 #{item}  
+ 																		</foreach>   and c.gh=#{gh}
+      union all
+      select e.gnbm,e.gnmc,e.flbm,f.dwbm,e.gnxh,e.gnct,'',f.bmbm from xt_qx_gndy e right join XT_QX_JSGNFP f on e.gnbm = f.gnbm  where f.dwbm=#{dwbm} and f.jsbm in 
+      																	<foreach item="item" index="index" collection="jsbm" open="(" separator="," close=")">  
+ 																						 #{item}  
+ 																		</foreach> and f.bmbm=#{bmbm}) t 
+     start with fflbm Is not null connect by prior fflbm= flbm order by flxh asc 
+     
+     
+	</select > 
+	
+	
+</mapper>

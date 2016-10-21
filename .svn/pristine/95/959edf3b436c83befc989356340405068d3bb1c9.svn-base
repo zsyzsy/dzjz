@@ -1,0 +1,27 @@
+/**
+ * 
+ */
+package com.common.service;
+
+import java.util.Collection;
+import java.util.Map;
+import java.util.UUID;
+
+import com.common.CommInterface;
+import com.common.po.Ajjbxx;
+import com.dzjz.jzzz.ajjzzz.po.Jzjbxx;
+
+/**
+ * @author Administrator
+ *
+ */
+public interface AjjbxxService extends CommInterface<Ajjbxx> {
+	public Collection<Ajjbxx> queryByMap(Map<String, ?> map);
+	//添加案件制作
+		public void add_ajzz(Map<String, Object> map);
+		
+		public void update_ajzz(Map<String, ?> map);
+		//案件制作时XT_DZJZ_ZZCS添加数据
+		public String add(Map<String, Object> map);
+		
+}

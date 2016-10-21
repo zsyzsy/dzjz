@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dzjz.xtpz.bm.dao.BmDao">
+
+	<resultMap id="bmMap" type="com.dzjz.xtpz.bm.po.Bm">
+		<id property="bmbm" column="bmbm" />
+		<result property="fbmbm" column="fbmbm" />
+		<result property="bmmc" column="bmmc" />
+		<result property="bmjc" column="bmjc" />
+		<result property="bmahjc" column="bmahjc" />
+		<result property="bmwhjc" column="bmwhjc" />
+		<result property="sflsjg" column="sflsjg" />
+		<result property="sfcbbm" column="sfcbbm" />
+		<result property="bmxh" column="bmxh" />
+		<result property="bz" column="BZ" />
+		<result property="sfsc" column="sfsc" />
+		<result property="bmys" column="bmys" />
+		<association property="dwbm" column="dwbm" javaType="com.dzjz.xtpz.dw.po.Dw">
+			<id property="dwbm" column="dwbm"/>
+			<result property="dwmc" column="dwmc" />
+			<result property="fdwbm" column="fdwbm" />
+			<result property="dwjb" column="dwjb" />
+			<result property="sfsc" column="sfsc" />
+			<result property="dwjc" column="dwjc" />
+			<result property="dwsx" column="dwsx" />
+		</association>
+	</resultMap>
+	<!-- 查询所有部门 -->
+	<select id="findAll" resultMap="bmMap" >
+		SELECT t.*, t1.* FROM XT_ZZJG_BMBM t 
+   join XT_ZZJG_DWBM t1 ON t.dwbm=t1.dwbm and t.sfsc='N' and t1.sfsc='N'
+	</select>
+	<!--通过条件查询部门信息 -->
+	<select id="queryByMap" resultMap="bmMap" >
+	<![CDATA[  
+		     SELECT t.*, t1.* FROM XT_ZZJG_BMBM t 
+   				join XT_ZZJG_DWBM t1 ON t.dwbm=t1.dwbm and t.sfsc='N' and t1.sfsc='N' 
+			]]>
+			<if test="dwbm != null and '' != dwbm">  
+            <![CDATA[  
+              AND t.dwbm=#{dwbm.dwbm}  
+            ]]>  
+            </if>
+			<if test="bmbm != null and '' != bmbm">  
+            <![CDATA[  
+              AND t.bmbm=#{bmbm}  
+            ]]>  
+            </if>
+			<if test="bmmc != null and '' != bmmc">  
+            <![CDATA[  
+              AND t.bmmc=#{bmmc}  
+            ]]>  
+            </if>
+	</select>
+	<insert id="add" parameterType="com.dzjz.xtpz.bm.po.Bm">
+		INSERT INTO XT_ZZJG_BMBM(
+			dwbm, 
+			bmbm, 
+			fbmbm, 
+			bmmc, 
+			bmjc ,
+			bmahjc, 
+			bmwhjc, 
+			sflsjg, 
+			sfcbbm, 
+			bmxh, 
+			bz, 
+			sfsc, 
+			bmys
+			)
+		VALUES (
+			#{dwbm.dwbm,jdbcType=CHAR},
+			#{bmbm,jdbcType=CHAR},
+			#{fbmbm,jdbcType=CHAR},
+			#{bmmc,jdbcType=VARCHAR},
+			#{bmjc,jdbcType=VARCHAR},
+			#{bmahjc,jdbcType=VARCHAR},
+			#{bmwhjc,jdbcType=VARCHAR},
+			#{sflsjg,jdbcType=CHAR},
+			#{sfcbbm,jdbcType=CHAR},
+			#{bmxh,jdbcType=INTEGER},
+			#{bz,jdbcType=VARCHAR},
+			#{sfsc,jdbcType=CHAR},
+			#{bmys,jdbcType=VARCHAR}
+			)
+	</insert> 
+		<!-- 逻辑删除 -->
+	<update id="delete" parameterType="com.dzjz.xtpz.bm.po.Bm">
+			update XT_ZZJG_BMBM t  set t.sfsc=#{sfsc} where t.dwbm=#{dwbm.dwbm} and t.bmbm=#{bmbm}
+	</update>
+		<!-- 修改 -->
+	<update id="update" parameterType="com.dzjz.xtpz.bm.po.Bm">
+			update XT_ZZJG_BMBM t  set t.bmmc=#{bmmc},t.bmjc=#{bmjc},t.bz=#{bz} where t.dwbm=#{dwbm.dwbm} and t.bmbm=#{bmbm}
+	</update>
+
+		<!-- 查询单位最大值 --><!-- sql可优化 -->
+	<select id="maxId" resultMap="bmMap">
+		select t1.* from XT_ZZJG_BMBM  t1 
+			where t1.dwbm=#{param} and t1.bmbm= (
+				SELECT max(t.bmbm) FROM XT_ZZJG_BMBM  t where t.dwbm=#{param}
+				)
+	</select>
+</mapper>

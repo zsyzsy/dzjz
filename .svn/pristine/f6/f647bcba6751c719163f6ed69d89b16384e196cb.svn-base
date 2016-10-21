@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN" "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<constant name="struts.objectFactory.spring.autoWire.alwaysRespect" value="true" /> 
+	<constant name="struts.custom.i18n.resources" value="message"></constant>
+	 <package name="p1" namespace="/" extends="struts-default,json-default">
+    	<interceptors>
+    		<interceptor name="myInterceptor" class="com.common.MyInterceptor"   />
+    		<interceptor-stack name="myStack">
+    			<!-- 调用拦截器的顺序 跟interceptor-ref 有关 -->
+    			<interceptor-ref name="defaultStack"  />
+    			<interceptor-ref name="myInterceptor"  />
+    			<!--<interceptor-ref name="token"  />  -->
+    		</interceptor-stack>
+    	</interceptors>
+    	<default-interceptor-ref name="myStack"  />
+    	<global-results>
+    		<result name="error" >/error.jsp</result>
+    		<result name="login" >/login.jsp</result>
+    	</global-results>
+    </package>
+    
+	<package name="struts2" extends="p1">
+		<!-- login -->
+		<action name="loginAction" class="com.dzjz.xtpz.login.action.LoginAction" >
+			<result name="input">login.jsp</result>
+			<result name="success">/WEB-INF/page/menu.jsp</result>
+			<result name="out">login.jsp</result>
+			<result name="update" type="redirect">loginAction!input</result>
+			<result name="error" type="redirect">
+				loginAction!login?errMsg=${errMsg}
+			</result>
+		</action>
+<!-- 		<action name="baseAction" class="com.common.BaseAction" > -->
+<!-- 			<result name="input">login.jsp</result> -->
+<!-- 			<result name="success">/WEB-INF/page/menu.jsp</result> -->
+<!-- 			<result name="out">login.jsp</result> -->
+<!-- 			<result name="update" type="redirect">loginAction!input</result> -->
+<!-- 			<result name="error" type="redirect"> -->
+<!-- 				loginAction!login?errMsg=${errMsg} -->
+<!-- 			</result> -->
+<!-- 		</action> -->
+	</package>
+	
+	<package name="xtpz" extends="p1" >
+		<!-- 单位 -->
+		<action name="dwlist" class="dwAction"  >
+			<result name="success">/WEB-INF/page/success.jsp</result>
+			<result name="error">/error.jsp</result>
+			<result name="input">/WEB-INF/page/xtpz/dw.jsp</result>
+			<result name="IdQueryMax" type="json" >
+				<param name="root">jsonListResult</param>
+			</result>
+			<result name="queryList" type="json" >
+				<param name="root">jsonListResult</param>
+			</result>
+			<result name="queryByMap" type="json" >
+				<param name="root">jsonListResult</param>
+			</result>
+			<result name="add">/WEB-INF/page/xtpz/dw.jsp</result>
+			<result name="update">/WEB-INF/page/xtpz/dw.jsp</result>
+			<result name="delete">/WEB-INF/page/xtpz/dw.jsp</result>
+		</action>
+		
+		
+		<!-- 部门 -->
+		<action name="bmqueryList" class="com.dzjz.xtpz.bm.action.BmAction"  >
+			<result name="input">/WEB-INF/page/xtpz/bm.jsp</result>
+			<result name="error">/WEB-INF/page/bmList.jsp</result>
+			<result name="add">/WEB-INF/page/xtpz/bm.jsp</result>
+			<result name="update"  >/WEB-INF/page/xtpz/bm.jsp</result>
+			<result name="delete" >/WEB-INF/page/xtpz/bm.jsp</result>
+			<result name="queryByMap" type="json" >
+				<param name="root">jsonListResult</param>
+			</result>
+			
+		</action>
+		<!-- 案件类别编码 -->
+		<action name="ajlbbmAction" class="com.dzjz.xtpz.ajlbbm.action.AjlbbmAction"  >
+			
+			<result name="success" type="json" >
+				<param name="root">jsonListResult</param>
+			</result>
+			<result name="ajlbbmsList" type="json" >
+				<param name="root">ajlbbms</param>
+			</result>
+			
+		</action>
+		
+		<!-- 功能分类 -->
+		<action name="gnflqueryList" class="com.dzjz.xtpz.gnfl.action.GnflAction"  >
+			<result name="input">/WEB-INF/page/xtpz/gnfl.jsp</result>
+			<result name="error">/WEB-INF/page/bmList.jsp</result>
+			<result name="add">/WEB-INF/page/xtpz/gnfl.jsp</result>
+			<result name="update"  >/WEB-INF/page/xtpz/gnfl.jsp</result>
+			<result name="delete" >/WEB-INF/page/xtpz/gnfl.jsp</result>
+			<result name="queryByMap" type="json" >
+				<param name="root">jsonListResult</param>
+			</result>
+			<result name="queryList" type="json" >
+				<param name="root">jsonListResult</param>
+			</result>
+		</action>
+		<!-- 功能定义 -->
+		<action name="gndyqueryList" class="com.dzjz.xtpz.gndy.action.GndyAction"  >
+			<result name="input">/WEB-INF/page/xtpz/gndy.jsp</result>
+			<result name="error">/WEB-INF/page/bmList.jsp</result>
+			<result name="add">/WEB-INF/page/xtpz/gndy.jsp</result>
+			<result name="update"  >/WEB-INF/page/xtpz/gndy.jsp</result>
+			<result name="delete" >/WEB-INF/page/xtpz/gndy.jsp</result>
+			<result name="queryByMap" type="json" >
+				<param name="root">jsonListResult</param>
+			</result>
+			<result name="queryList" type="json" >
+				<param name="root">jsonListResult</param>
+			</result>
+		</action>
+		
+		<!-- 模板配置 -->
+		<action name="mbpzqueryList" class="com.dzjz.xtpz.mbpz.action.MbpzAction"  >
+			<result name="input">/WEB-INF/page/xtpz/mbpz.jsp</result>
+			<result name="error">/WEB-INF/page/bmList.jsp</result>
+			<result name="add">/WEB-INF/page/xtpz/mbpz.jsp</result>
+			<result name="update"  >/WEB-INF/page/xtpz/mbpz.jsp</result>
+			<result name="delete" >/WEB-INF/page/xtpz/mbpz.jsp</result>
+			<result name="success" type="json" >
+				<param name="root">jsonListResult</param>
+			</result>
+		</action>
+		<!-- 所属类别 -->
+		<action name="sslbAction" class="com.dzjz.xtpz.sslb.action.SslbAction"  >
+			
+			<result name="success" type="json" >
+				<param name="root">jsonListResult</param>
+			</result>
+		</action>
+		
+		<!-- 参数配置 -->
+		<action name="cspzqueryList" class="com.dzjz.xtpz.cspz.action.CspzAction"  >
+			<result name="input">/WEB-INF/page/xtpz/cspz.jsp</result>
+			<result name="error">/WEB-INF/page/bmList.jsp</result>
+			<result name="add">/WEB-INF/page/xtpz/cspz.jsp</result>
+			<result name="update"  >/WEB-INF/page/xtpz/cspz.jsp</result>
+			<result name="delete" >/WEB-INF/page/xtpz/cspz.jsp</result>
+			<result name="queryByMap" type="json" >
+				<param name="root">jsonListResult</param>
+			</result>
+			<result name="queryList" type="json" >
+				<param name="root">jsonListResult</param>
+			</result>
+			<result name="queryList1" type="json" >
+				<param name="root">pzbs</param>
+			</result>
+		</action>
+		
+		
+		<!-- 设备信息 -->
+		<action name="sbxxqueryList" class="com.dzjz.xtpz.sbxx.action.SbxxAction"  >
+			<result name="input">/WEB-INF/page/xtpz/sbxx.jsp</result>
+			<result name="error">/WEB-INF/page/bmList.jsp</result>
+			<result name="add">/WEB-INF/page/xtpz/sbxx.jsp</result>
+			<result name="update"  >/WEB-INF/page/xtpz/sbxx.jsp</result>
+			<result name="delete" >/WEB-INF/page/xtpz/sbxx.jsp</result>
+			<result name="queryByMap" type="json" >
+				<param name="root">jsonListResult</param>
+			</result>
+			<result name="queryList" type="json" >
+				<param name="root">jsonListResult</param>
+			</result>
+		</action>
+		
+		
+		<!-- 日志查询 -->
+		<action name="rzcxqueryList" class="com.dzjz.xtpz.rzcx.action.RzcxAction"  >
+			<result name="input">/WEB-INF/page/xtpz/rzcx.jsp</result>
+			<result name="error">/WEB-INF/page/bmList.jsp</result>
+			<result name="add">/WEB-INF/page/xtpz/rzcx.jsp</result>
+			<result name="update"  >/WEB-INF/page/xtpz/rzcx.jsp</result>
+			<result name="delete" >/WEB-INF/page/xtpz/rzcx.jsp</result>
+			<result name="queryByMap" type="json" >
+				<param name="root">jsonListResult</param>
+			</result>
+			<result name="queryList" type="json" >
+				<param name="root">jsonListResult</param>
+			</result>
+		</action>
+		
+		<!-- 用户 -->
+		<action name="yhAction" class="com.dzjz.xtpz.qx.action.YhAction">
+			<result name="success" type="json" >
+				<param name="root">jsonListResult</param>
+			</result>
+			<result name="input" >/WEB-INF/page/xtpz/qx/yh.jsp</result>
+			<result name="add" >/WEB-INF/page/xtpz/qx/yh.jsp</result>
+			<result name="update"  >/WEB-INF/page/xtpz/qx/yh.jsp</result>
+			<result name="delete" >/WEB-INF/page/xtpz/qx/yh.jsp</result>
+		</action>
+		
+		
+		<!-- 角色 -->
+		<action name="jsAction" class="com.dzjz.xtpz.qx.action.JsAction">
+			<result name="queryByMap" type="json" >
+				<param name="root">jsonListResult</param>
+			</result>
+			<result name="input" >/WEB-INF/page/xtpz/qx/yh.jsp</result>
+			<result name="add" >/WEB-INF/page/xtpz/qx/yh.jsp</result>
+			<result name="update"  >/WEB-INF/page/xtpz/qx/yh.jsp</result>
+			<result name="delete" >/WEB-INF/page/xtpz/qx/yh.jsp</result>
+		</action>
+
+		<!-- 角色权限 -->
+		<action name="jsQxAction" class="com.dzjz.xtpz.qx.action.JsQxAction">
+			<result name="success" type="json" >
+				<param name="root">jsonListResult</param>
+			</result>
+			<result name="add_bminfo" >/WEB-INF/page/xtpz/qx/jsqxgl.jsp</result>
+			<result name="input" >/WEB-INF/page/xtpz/qx/jsqxgl.jsp</result>
+			<result name="add" >/WEB-INF/page/xtpz/qx/jsqxgl.jsp</result>
+			<result name="update"  >/WEB-INF/page/xtpz/qx/jsqxgl.jsp</result>
+			<result name="delete" >/WEB-INF/page/xtpz/qx/jsqxgl.jsp</result>
+		</action>
+		
+		<!-- 人员权限 -->
+		<action name="ryQxAction" class="com.dzjz.xtpz.qx.action.RyQxAction">
+			<result name="success" type="json" >
+				<param name="root">jsonListResult</param>
+			</result>
+			<result name="input" >/WEB-INF/page/xtpz/qx/ryqx.jsp</result>
+			<result name="add" >/WEB-INF/page/xtpz/qx/ryqx.jsp</result>
+			<result name="update"  >/WEB-INF/page/xtpz/qx/ryqx.jsp</result>
+			<result name="delete" >/WEB-INF/page/xtpz/qx/ryqx.jsp</result>
+		</action>
+		<action name="gnByRyMenuAction" class="com.dzjz.xtpz.qx.action.GnByRyMenuAction">
+			<result name="success" type="json" >
+				<param name="root">jsonListResult</param>
+			</result>
+		</action>
+	</package>
+	
+	<package name="jzzz" extends="p1">
+	<!-- 案件基本信息 -->
+			<action name="ajjbxxqueryList" class="com.common.action.AjjbxxAction"  >
+				<result name="input">/WEB-INF/page/jzzz/jzjbxx.jsp</result>
+				<result name="error">/WEB-INF/page/bmList.jsp</result>
+				<result name="add">/WEB-INF/page/jzzz/jzjbxx.jsp</result>
+				<result name="update" >/WEB-INF/page/jzzz/jzjbxx.jsp</result>
+				<result name="delete" >/WEB-INF/page/jzzz/jzjbxx.jsp</result>
+				<result name="queryByMap" type="json" >
+					<param name="root">jsonListResult</param>
+				</result>
+				<result name="queryList" type="json" >
+					<param name="root">jsonListResult</param>
+				</result>
+				<result name="add_jzzz" type="json" >
+					<param name="root">url</param>
+				</result>
+			</action>
+			<!-- 卷宗基本信息-->
+			<action name="jzjbxxqueryList" class="com.dzjz.jzzz.ajjzzz.action.JzjbxxAction"  >
+				<result name="input">/WEB-INF/page/jzzz/jzsdjc.jsp</result>
+				<result name="error">/WEB-INF/page/bmList.jsp</result>
+				<result name="add">/WEB-INF/page/jzzz/jzsdjc.jsp</result>
+				<result name="update"  >/WEB-INF/page/jzzz/jzsdjc.jsp</result>
+				<result name="delete" >/WEB-INF/page/jzzz/jzsdjc.jsp</result>
+				<result name="queryByMap" type="json" >
+					<param name="root">jsonListResult</param>
+				</result>
+				<result name="queryList" type="json" >
+					<param name="root">jsonListResult</param>
+				</result>
+			</action>
+	</package>
+	<!-- 统计查询 -->
+	<package name="tjcx" extends="p1">
+	<!-- 案件卷宗制作量查询 -->
+		   <action name="cxAjjzzzlAction" class="com.dzjz.tjcx.action.CxAjjzzzlAction"  >
+					<result name="input">/WEB-INF/page/tjcx/cxajzzqk.jsp</result>
+					<result name="success" type="json" >
+					<param name="root">jsonListResult</param>
+				</result>
+			</action>
+	<!-- 案件卷宗基本信息查询 -->
+		   <action name="cxAjjbxxAction" class="com.dzjz.tjcx.action.CxAjjbxxAction"  >
+					<result name="input">/WEB-INF/page/tjcx/cxajjbqk.jsp</result>
+			</action>
+	
+	</package>
+	<!-- 案件卷宗统计报表 -->
+	<package name="tjbb" extends="p1">
+	<!-- 案件卷宗制作量统计 -->
+		   <action name="jzzzltjAction" class="com.dzjz.tjbb.action.JzzzltjAction"  >
+					<result name="input">/WEB-INF/page/tjbb/jzzzltj.jsp</result>
+					<result name="success" type="json" >
+					<param name="root">jsonListResult</param>
+				</result>
+			</action>
+	<!-- 案件卷宗制作率统计 -->
+		   <action name="jzzzlvtjAction" class="com.dzjz.tjbb.action.JzzzlvtjAction"  >
+					<result name="input">/WEB-INF/page/tjbb/jzzzlvtj.jsp</result>
+					<result name="success" type="json" >
+					<param name="root">jsonListResult</param>
+				</result>
+			</action>
+	<!-- 卷宗月度统计 -->
+		   <action name="jzydtjAction" class="com.dzjz.tjbb.action.JzydtjAction"  >
+					<result name="input">/WEB-INF/page/tjbb/jzydtj.jsp</result>
+					<result name="success" type="json" >
+					<param name="root">jsonListResult</param>
+				</result>
+			</action>
+	<!-- 卷宗人员制作量统计 -->
+		   <action name="jzzzgzltjAction" class="com.dzjz.tjbb.action.JzzzgzltjAction"  >
+					<result name="input">/WEB-INF/page/tjbb/jzzzgzltj.jsp</result>
+					<result name="success" type="json" >
+						<param name="root">jsonListResult</param>
+					</result>
+			</action>
+	<!-- 卷宗 存储空间 -->
+		   <action name="jzcctjAction" class="com.dzjz.tjbb.action.JzcctjAction"  >
+					<result name="input">/WEB-INF/page/tjbb/jzcctj.jsp</result>
+					<result name="success" type="json" >
+						<param name="root">jsonListResult</param>
+					</result>
+			</action>
+	
+	</package>
+	<package name="jzfp" extends="p1">
+	<!-- 卷宗分配-->
+		   <action name="lsajbdAction" class="com.dzjz.jzyj.action.LsajbdAction"  >
+					<result name="input">/WEB-INF/page/jzyj/jzfp.jsp</result>
+					<result name="delete">/WEB-INF/page/jzyj/jzfp.jsp</result>
+					<result name="add">/WEB-INF/page/jzyj/jzfp.jsp</result>
+					<result name="inputaj">/WEB-INF/page/jzyj/jzfpaj.jsp</result>
+					<result name="success" type="json" >
+						<param name="root">jsonListResult</param>
+					</result>
+			</action>
+	<!-- 卷宗阅卷-->
+		   <action name="lsajyjAction" class="com.dzjz.jzyj.action.LsajyjAction"  >
+		   			<result name="input">/WEB-INF/page/jzyj/jzyj.jsp</result>
+					<result name="inputaj">/WEB-INF/page/jzyj/jzyjaj.jsp</result>
+					<result name="error1">/WEB-INF/page/jzyj/jzyjaj.jsp</result>
+					<result name="success" type="json" >
+						<param name="root">jsonListResult</param>
+					</result>
+			</action>
+	
+	
+	</package>
+</struts>
+

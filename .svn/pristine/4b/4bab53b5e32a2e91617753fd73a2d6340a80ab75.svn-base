@@ -1,0 +1,357 @@
+/**
+ * 
+ */
+package com.common;
+
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.struts2.ServletActionContext;
+
+import com.dzjz.xtpz.dw.po.Dw;
+import com.dzjz.xtpz.qx.po.Yh;
+import com.dzjz.xtpz.qx.po.YhModel;
+import com.dzjz.xtpz.qx.service.YhService;
+import com.dzjz.xtpz.rzcx.po.Rzcx;
+import com.dzjz.xtpz.rzcx.service.RzcxService;
+import com.google.common.collect.Maps;
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.ActionSupport;
+
+import Yy.SliceTransferInterface.TransferPrx;
+import Yy.SliceTransferInterface.TransferPrxHelper;
+
+/**
+ * @author Administrator
+ *
+ */
+public class BaseAction extends ActionSupport{
+
+	/**
+	 * 
+	 */
+	protected static final long serialVersionUID = -1406921906926641878L;
+	
+	private YhService yhService;
+	
+	private RzcxService rzcxService;
+	
+	private Yh yh;
+	
+	private List<YhModel> list2;
+	
+	protected String errMsg;
+	
+	protected String success;
+
+	/**
+	 * 
+	 * 
+	 * @return 用户信息
+	 */
+	public Yh YhSession1(){
+		//获取登陆后的session值
+		String dwbm= (String) ActionContext.getContext().getSession().get("dwbm");
+		String dlbm= (String) ActionContext.getContext().getSession().get("dlbm");
+		Yh t=new Yh();
+		Dw dw=new Dw();
+		dw.setDwbm(dwbm);
+		t.setDlbm(dlbm);
+		t.setDwbm(dw);
+		//查询用户
+		yhService.queryByMap(t);
+		List<Yh> list=(List<Yh>) yhService.queryByMap(t);
+		yh=list.get(0);
+		return yh;
+	}
+	/**
+	 * 
+	 * 
+	 * @return 用户角色部门信息
+	 */
+	protected YhModel YhSession(){
+		//获取登陆后的session值
+		String dwbm= (String) ActionContext.getContext().getSession().get("dwbm");
+		String dlbm= (String) ActionContext.getContext().getSession().get("dlbm");
+		Yh t=new Yh();
+		Dw dw=new Dw();
+		dw.setDwbm(dwbm);
+		t.setDlbm(dlbm);
+		t.setDwbm(dw);
+		//查询用户
+		List<Yh> list=(List<Yh>) yhService.queryByMap(t);
+		
+		yh=list.get(0);
+		Map< String, Object> map=Maps.newHashMap();
+		map.put("gh", yh.getGh());
+		map.put("dwbm", yh.getDwbm().getDwbm());
+		List<YhModel> list2= (List<YhModel>) yhService.ryinfo(map);
+//		ActionContext.getContext().getSession().put("yhModel", list2.get(0));
+		YhModel yhModel=list2.get(0);
+		//用于合并权限,jsqx使用
+		if(list2.size()>1){
+			String jsbm="";
+			for(int i=0;i<list2.size();i++){
+				if(i==list2.size()-1){
+				jsbm+=list2.get(i).getJsbm();
+				}else{
+					jsbm+=list2.get(i).getJsbm()+",";
+				}
+			}
+			yhModel.setJsbm(jsbm);
+		}
+		return yhModel;
+	}
+	/**
+	 * 
+	 * 
+	 * @return 用户信息
+	 */
+	protected YhModel YhSessionByDwGh(String dwbm,String gh){
+		//获取登陆后的session值
+		Yh t=new Yh();
+		Dw dw=new Dw();
+		dw.setDwbm(dwbm);
+		t.setGh(gh);
+		t.setDwbm(dw);
+		//查询用户
+		List<Yh> list=(List<Yh>) yhService.queryByMap(t);
+		
+		yh=list.get(0);
+		Map< String, Object> map=Maps.newHashMap();
+		map.put("gh", yh.getGh());
+		map.put("dwbm", yh.getDwbm().getDwbm());
+		List<YhModel> list2= (List<YhModel>) yhService.ryinfo(map);
+//		ActionContext.getContext().getSession().put("yhModel", list2.get(0));
+		YhModel yhModel=list2.get(0);
+		//用于合并权限,jsqx使用
+		if(list2.size()>1){
+			String jsbm="";
+			for(int i=0;i<list2.size();i++){
+				if(i==list2.size()-1){
+					jsbm+=list2.get(i).getJsbm();
+				}else{
+					jsbm+=list2.get(i).getJsbm()+",";
+				}
+			}
+			yhModel.setJsbm(jsbm);
+		}
+		return yhModel;
+	}
+	
+	// 取得Session对象
+    protected Object getSession(String key) {
+        return ActionContext.getContext().getSession().get(key);
+    }
+    // 取得当前登录的用户名
+    protected String getLoginUsername() {
+        return (String) ActionContext.getContext().getSession().get("yh");
+    }
+    // 检查Session对象是否存在
+    protected boolean isExistSession(String key) {
+        if (ActionContext.getContext().getSession().get(key) != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    // 保存一条错误
+    protected void saveActionError(String key) {
+        super.addActionError(super.getText(key));
+    }
+    // 保存一个消息
+    protected void saveActionMessage(String key) {
+        super.addActionMessage(super.getText(key));
+    }
+    // 取得查询的URL
+    protected String getRequestPath() {        
+        return (String) ServletActionContext.getRequest().getServletPath();
+    }
+	
+	/**
+	 * 保存操作日志
+	 * 
+	 * @param description
+	 */
+	protected void addLog( String description) throws Exception {
+		// TODO 
+		//获取IP地址
+		String ipAddress = getIpAddress();
+		HttpServletRequest request = ServletActionContext.getRequest();
+		yh=(Yh) request.getSession().getAttribute("yh");
+		YhModel yhModel=YhSession();
+		String target = request.getServletPath();
+			Rzcx rzcx=new Rzcx();
+			rzcx.setDwbm(yh.getDwbm().getDwbm());;
+			rzcx.setDwmc(yh.getDwbm().getDwmc());
+			rzcx.setBmbm(yhModel.getBmbm());
+			rzcx.setBmmc(yhModel.getBmmc());
+			rzcx.setCzrgh(yhModel.getGh());
+			rzcx.setCzr(yhModel.getDlbm());
+			Date date =new Date();
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			String date1=formatter.format(date);
+			Date date2=formatter.parse(date1);
+			rzcx.setCzsj(date2);
+			rzcx.setCzip(ipAddress);
+//			rzcx.setCzlx(czlx);
+			rzcx.setFql(date.getYear()+1900+"");
+			rzcx.setRznr(description);
+		rzcxService.add(rzcx);
+	}
+	
+	/**
+	 * 获取IP地址
+	 * @return IP地址
+	 */
+	protected String getIpAddress()
+	{	
+		HttpServletRequest request = ServletActionContext.getRequest();//获取请求
+		String ipAddress = IpHelper.getIpAddress(request);//获取IP地址
+		return ipAddress;
+	}
+	
+	 public  String  getKeyUrl(String args,String text) {
+		  String newUrl="";
+	    int status = 0;
+	    // Communicator实例
+	    Ice.Communicator ic = null;
+	    Ice.InitializationData data ;
+	    try
+	    {
+	      // 调用Ice.Util.Initialize()初始化Ice run time
+
+	      //   根据servant的名称以及服务器ip、端口获取远程服务代理
+//	      Ice.ObjectPrx base = ic.stringToProxy("DZJZAppServer/Locator:default -h 10.1.1.23 -p 12000");
+	      data = new Ice.InitializationData();
+	      data.properties = Ice.Util.createProperties();
+//	      args="DZJZAppServer/Locator:default -h 10.1.1.23 -p 12000";
+	      data.properties.setProperty("Ice.Default.Locator",args );
+	      data.properties.setProperty("Ice.MessageSizeMax", "10240000");
+	      data.properties.setProperty("DosService.Proxy", "YyTranServer/TransferImpl");
+	      	ic=Ice.Util.initialize(data);
+
+	      // 将上面的代理向下转换成一个Printer接口的代理
+	      TransferPrx helloWorld = TransferPrxHelper.checkedCast(ic.propertyToProxy("DosService.Proxy"));
+
+	      // 如果转换成功
+	      if (helloWorld == null)
+	      {
+	        throw new Error("Invalid proxy");
+	      }
+
+	      // 调用这个代理，将字符串传给它
+	      newUrl=helloWorld.Encrypt(text, "MATICSOFT");
+	     return  newUrl;
+	    } catch (Ice.LocalException e)
+	    {
+	      e.printStackTrace();
+	      status = 1;
+	    } catch (Exception e)
+	    {
+	      e.printStackTrace();
+	      status = 1;
+	    } finally
+	    {
+	      if (ic != null)
+	      {
+	        ic.destroy();
+	      }
+	    }
+	    System.exit(status);
+		return newUrl;
+	  }
+
+
+	/**
+	 * @return the yhService
+	 */
+	public YhService getYhService() {
+		return yhService;
+	}
+
+	/**
+	 * @param yhService the yhService to set
+	 */
+	public void setYhService(YhService yhService) {
+		this.yhService = yhService;
+	}
+
+	/**
+	 * @return the yh
+	 */
+	public Yh getYh() {
+		return yh;
+	}
+
+	/**
+	 * @param yh the yh to set
+	 */
+	public void setYh(Yh yh) {
+		this.yh = yh;
+	}
+
+	/**
+	 * @return the errMsg
+	 */
+	public String getErrMsg() {
+		return errMsg;
+	}
+
+	/**
+	 * @param errMsg the errMsg to set
+	 */
+	public void setErrMsg(String errMsg) {
+		this.errMsg = errMsg;
+	}
+
+	/**
+	 * @return the rzcxService
+	 */
+	public RzcxService getRzcxService() {
+		return rzcxService;
+	}
+
+	/**
+	 * @param rzcxService the rzcxService to set
+	 */
+	public void setRzcxService(RzcxService rzcxService) {
+		this.rzcxService = rzcxService;
+	}
+
+	/**
+	 * @return the success
+	 */
+	public String getSuccess() {
+		return success;
+	}
+
+	/**
+	 * @param success the success to set
+	 */
+	public void setSuccess(String success) {
+		this.success = success;
+	}
+
+	/**
+	 * @return the list2
+	 */
+	public List<YhModel> getList2() {
+		return list2;
+	}
+
+	/**
+	 * @param list2 the list2 to set
+	 */
+	public void setList2(List<YhModel> list2) {
+		this.list2 = list2;
+	}
+
+	
+
+}

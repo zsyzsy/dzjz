@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dzjz.xtpz.mbpz.dao.MbpzDao">
+
+	<resultMap id="mbpzMap" type="com.dzjz.xtpz.mbpz.po.Jzmbpz">
+		<id property="dossiertypevaluemember" column="dossiertypevaluemember" />
+		<result property="caseinfotypeid" column="caseinfotypeid" />
+		<result property="caseinfotypename" column="caseinfotypename" />
+		<result property="unitid" column="unitid" />
+		<result property="dossiertypedisplaymember" column="dossiertypedisplaymember" />
+		<result property="dossierparentmember" column="dossierparentmember" />
+		<result property="dossierevidencevaluemember" column="dossierevidencevaluemember" />
+		<result property="sortindex" column="sortindex" />
+		<result property="category" column="category" />
+		<result property="sslbbm" column="sslbbm" />
+		<result property="sfsc" column="sfsc" />
+		<result property="sslbmc" column="sslbmc" />
+		<result property="auto" column="auto" />
+		<association property="unitid" column="unitid" javaType="com.dzjz.xtpz.dw.po.Dw">
+			<id property="dwbm" column="dwbm"/>
+			<result property="dwmc" column="dwmc" />
+			<result property="fdwbm" column="fdwbm" />
+			<result property="dwjb" column="dwjb" />
+			<result property="sfsc" column="sfsc" />
+			<result property="dwjc" column="dwjc" />
+			<result property="dwsx" column="dwsx" />
+		</association>
+	</resultMap>
+	<resultMap id="queryByMap1" type="java.util.HashMap">
+		<result property="qxbm" column="qxbm" />
+		<result property="qxmc" column="qxmc" />
+		<result property="ajlbbm" column="ajlbbm" />
+		<result property="ajlbmc" column="ajlbmc" />
+		<result property="autonum" column="autonum" />
+		<result property="sslbbm" column="sslbbm" />
+		<result property="sslbmc" column="sslbmc" />
+		<result property="category" column="category" />
+		<result property="dossiertypevaluemember" column="dossiertypevaluemember" />
+		<result property="dossierparentmember" column="dossierparentmember" />
+		<result property="dossiertypedisplaymember" column="dossiertypedisplaymember" />
+	</resultMap>
+	<resultMap id="queryByMbMap" type="java.util.HashMap">
+		<result property="isleaf" column="isleaf" />
+		<result property="dossiertypevaluemember" column="dossiertypevaluemember" />
+		<result property="caseinfotypeid" column="caseinfotypeid" />
+		<result property="caseinfotypename" column="caseinfotypename" />
+		<result property="unitid" column="unitid" />
+		<result property="dwmc" column="dwmc" />
+		<result property="dossiertypedisplaymember" column="dossiertypedisplaymember" />
+		<result property="dossierparentmember" column="dossierparentmember" />
+		<result property="dossierevidencevaluemember" column="dossierevidencevaluemember" />
+		<result property="sortindex" column="sortindex" />
+		<result property="category" column="category" />
+		<result property="sslbbm" column="sslbbm" />
+		<result property="sslbmc" column="sslbmc" />
+		<result property="auto" column="auto" />
+		<result property="icon" column="icon" />
+	</resultMap>
+	
+	
+	<!--通过条件查询模板信息,模板卷信息 -->
+	<select id="queryByMap" resultMap="queryByMap1" parameterType= "java.util.HashMap">
+<!-- 		   SELECT * FROM (SELECT qxbm,qxmc,ajlbbm,ajlbmc,(select COUNT(1) from xy_dzjz_mbpzb where unitid = qx.qxbm and CaseInfoTypeID = lb.ajlbbm and Auto = 'Y') AutoNum  -->
+<!--            	 FROM  -->
+<!--            (SELECT * FROM xt_dm_qx where qxlx = 0) qx -->
+<!--             LEFT JOIN xt_dm_ajlbbm lb on(1 = 1) -->
+<!--               where lb.sfsc = 'N' and (select COUNT(1) from xy_dzjz_mbpzb where unitid = qx.qxbm and CaseInfoTypeID = lb.ajlbbm)  > 0  -->
+<!--                  AND DWBM = #{dwbm} AND JSBM in  -->
+<!--                  					<foreach item="item" index="index" collection="jsbm" open="(" separator="," close=")">   -->
+<!--  										 #{item}   -->
+<!--  									</foreach>  -->
+<!--  									AND BMBM in (#{bmbm}) AND QXLX = 0 ) T  -->
+			select qxbm,qxmc,ajlbbm,ajlbmc,sslbbm ,dossiertypevaluemember,dossierparentmember ,sslbmc,dossiertypedisplaymember,category,
+			(select COUNT(1) from xy_dzjz_mbpzb n where n.unitid = tn.qxbm and CaseInfoTypeID = lb.ajlbbm and Auto = 'Y') AutoNum 
+				from 
+					(  SELECT * FROM 
+							(SELECT min(qxbm) qxbm ,min(jsbm) jsbm,min(qxlx) qxlx,min(qxmc) qxmc,min(dwbm) dwbm,min(bmbm) bmbm
+                       			FROM xt_dm_qx where qxlx = 0  AND DWBM = #{dwbm} AND JSBM in 
+                       			<foreach item="item" index="index" collection="jsbm" open="(" separator="," close=")">  
+ 										 #{item}  
+ 									</foreach>   AND BMBM in (#{bmbm})
+                       			group by qxbm,jsbm,qxlx,qxmc,dwbm,bmbm
+                      		) qx 
+                       join xy_dzjz_mbpzb mb
+        			   on  mb.unitid = qx.qxbm   where   mb.sfsc='N'   
+        			) tn
+        		join  xt_dm_ajlbbm lb on  tn.CaseInfoTypeID=lb.ajlbbm
+        		 where lb.sfsc='N' and  (select COUNT(1) from xy_dzjz_mbpzb where unitid = tn.qxbm and CaseInfoTypeID = lb.ajlbbm)  > 0 
+        		 <if test="about != null and '' != about">  
+		            <![CDATA[  
+		         		and DOSSIERPARENTMEMBER is null
+		            ]]>  
+		            </if>
+		            <if test="dossiertypevaluemember != null and '' != dossiertypevaluemember">  
+		            <![CDATA[  
+		         		and dossiertypevaluemember =#{dossiertypevaluemember} or dossierparentmember=#{dossiertypevaluemember}
+		            ]]>  
+		            </if>
+			
+	</select>
+	<!-- 编辑模板查询 -->
+	<select id="queryByMb" resultMap="queryByMbMap" parameterType= "java.util.HashMap">
+	<![CDATA[  
+		 select distinct CONNECT_BY_ISLEAF ISLEAF,DossierTypeValueMember,CaseInfoTypeID,CaseInfoTypeName,UnitID,
+				(select dwmc from xt_zzjg_dwbm where dwbm=UnitID) as DWMC,
+			DossierTypeDisplayMember,DossierParentMember,DossierEvidenceValueMember,SortIndex,Category,SSLBBM,SSLBMC,Auto 
+	from XY_DZJZ_MBPZB  
+where  SFSC='N'  and UNITID = #{dwbm} and caseInfoTypeID = #{ajlbbm} and dossierparentmember is not null start with  SFSC='N'  connect by DossierParentMember= prior DossierTypeValueMember order by SortIndex
+			]]>
+			
+	</select>
+	<insert id="add" parameterType="com.dzjz.xtpz.mbpz.po.Jzmbpz">
+		INSERT INTO XY_DZJZ_MBPZB(
+			dossiertypevaluemember, 
+			caseinfotypeid, 
+			caseinfotypename, 
+			unitid, 
+			dossiertypedisplaymember, 
+			dossierparentmember, 
+			dossierevidencevaluemember, 
+			sortindex, 
+			category, 
+			sslbbm, 
+			sfsc, 
+			sslbmc, 
+			auto
+			)
+		VALUES (
+			#{dossiertypevaluemember,jdbcType=VARCHAR},
+			#{caseinfotypeid,jdbcType=VARCHAR},
+			#{caseinfotypename,jdbcType=VARCHAR},
+			#{unitid.dwbm,jdbcType=VARCHAR},
+			#{dossiertypedisplaymember,jdbcType=VARCHAR},
+			#{dossierparentmember,jdbcType=VARCHAR},
+			#{dossierevidencevaluemember,jdbcType=VARCHAR},
+			#{sortindex,jdbcType=INTEGER},
+			#{category,jdbcType=CHAR},
+			#{sslbbm,jdbcType=VARCHAR},
+			#{sfsc,jdbcType=CHAR},
+			#{sslbmc,jdbcType=VARCHAR},
+			#{auto,jdbcType=CHAR}
+			)
+	</insert> 
+		<!-- 逻辑删除 -->
+	<update id="delete" parameterType="com.dzjz.xtpz.mbpz.po.Jzmbpz">
+			update XY_DZJZ_MBPZB t  set t.sfsc=#{sfsc} where t.dwbm=#{dwbm.dwbm} and t.bmbm=#{bmbm}
+	</update>
+		<!-- 修改 -->
+	<update id="update" parameterType="com.dzjz.xtpz.mbpz.po.Jzmbpz">
+			update XY_DZJZ_MBPZB t  set t.bmmc=#{bmmc},t.bmjc=#{bmjc},t.bz=#{bz} where t.dwbm=#{dwbm.dwbm} and t.bmbm=#{bmbm}
+	</update>
+	<!-- 删除sslb -->
+	<delete id="delete_sslb" parameterType= "java.util.HashMap">
+			delete  from xy_dzjz_mbpzb t where t.dossiertypevaluemember=#{sslb}   
+	
+	</delete>
+	<!-- 删除模板 -->
+	<delete id="delete_Mb" parameterType= "java.util.HashMap">
+			delete  from xy_dzjz_mbpzb t where t.dossiertypevaluemember=#{dossiertypevaluemember}  or dossierparentmember=#{dossiertypevaluemember}
+	
+	</delete>
+
+		<!-- 查排序最大值 --><!-- sql可优化 -->
+	<select id="maxSortindex" resultMap="mbpzMap">
+		select t1.* from XY_DZJZ_MBPZB  t1 
+			where  t1.SORTINDEX= (
+				SELECT max(t.SORTINDEX) FROM XY_DZJZ_MBPZB t 
+				)
+	</select>
+		<!-- 查配置编码最大值 --><!-- sql可优化 -->
+	<select id="maxDossiertypevaluemember" resultMap="mbpzMap">
+		select t1.* from XY_DZJZ_MBPZB  t1 
+			where  t1.dossiertypevaluemember= (
+				SELECT max(t.dossiertypevaluemember) FROM XY_DZJZ_MBPZB t 
+				)
+	</select>
+</mapper>

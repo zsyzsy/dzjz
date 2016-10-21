@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+       http://www.springframework.org/schema/beans 
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/tx 
+       http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+       http://www.springframework.org/schema/aop 
+       http://www.springframework.org/schema/aop/spring-aop-3.0.xsd"> 
+        
+	<aop:aspectj-autoproxy proxy-target-class="true" />  
+
+	<!-- 数据源 -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+<!-- 		<property name="url" value="jdbc:oracle:thin:@localhost:1521:orcl" /> -->
+<!-- 		<property name="username" value="scott" /> -->
+<!-- 		<property name="password" value="root" /> -->
+		<property name="url" value="jdbc:oracle:thin:@10.1.1.16:1521:orcl" />
+		<property name="username" value="scott" />
+		<property name="password" value="root" />
+		<property name="maxActive" value="100"></property>
+		<property name="maxIdle" value="30"></property>
+		<property name="maxWait" value="500"></property>
+		<property name="defaultAutoCommit" value="true"></property>
+	</bean>
+
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<!-- 扫描mybatis配置文件 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+<!-- 		<property name="configLocation" value="classpath:resource/configuration.xml" /> -->
+		<property name="typeAliasesPackage" value="com.**.po" />
+		<property name="mapperLocations" value="classpath:com/**/*Mapper.xml"/>
+	</bean>
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.**.dao" />
+	</bean>
+	<!--  -->
+	 <bean name="taskJob" class="test.TaskJob" />
+    <bean id="methodInvokingJobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+       <property name="targetObject">
+           <ref bean="taskJob" />
+       </property>
+       <property name="targetMethod">
+           <value>SayHello</value>
+       </property>
+    </bean>
+    <!-- 配置触发器 -->
+<!--     <bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean"> -->
+      
+<!--        <property name="jobDetail"> -->
+<!--            <ref bean="methodInvokingJobDetail" /> -->
+<!--        </property> -->
+<!--        时间 -->
+<!--        <property name="cronExpression"> -->
+<!--            <value>0/10 * * * * ?</value> -->
+<!--        </property> -->
+
+<!--     </bean> -->
+
+<!--     <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean"> -->
+<!--        添加触发器 -->
+<!--        <property name="triggers"> -->
+<!--            <list> -->
+<!--               <ref local="cronTrigger" /> -->
+<!--            </list> -->
+<!--        </property> -->
+<!--     </bean> -->
+	<!--  -->
+	
+	
+	
+	<!-- login -->
+	<bean id="userService" class="com.wporoad.app.serviceImpl.UserServiceImpl">
+		<property name="userMapper" ref="userMapper" />
+	</bean>
+	<bean id="userAction" class="com.wporoad.app.web.UserAction">
+		<property name="userService" ref="userService" />
+	</bean>
+	<!-- loginAction -->
+	<bean id="loginAction" class="com.dzjz.xtpz.login.action.LoginAction">
+		<property name="yhService" ref="yhService" />
+		<property name="loginService" ref="loginService" />
+	</bean>
+	<bean id="loginService" class="com.dzjz.xtpz.login.service.impl.LoginServiceImpl">
+		<property name="loginDao" ref="loginDao" />
+	</bean>
+	<!-- BaseAction.java -->
+	<bean id="baseAction" class="com.common.BaseAction">
+		<property name="yhService" ref="yhService" />
+		<property name="rzcxService" ref="rzcxService" />
+	</bean>
+	
+	<!-- 系统配置 -->
+	<!-- dw -->
+	<bean id="dwService" class="com.dzjz.xtpz.dw.service.impl.DwServiceImpl">
+		<property name="dwDao" ref="dwDao" />
+	</bean>
+	<bean id="dwAction" class="com.dzjz.xtpz.dw.action.DwAction">
+		<property name="dwService" ref="dwService" />
+	</bean>
+	<!-- bm -->
+	<bean id="bmService" class="com.dzjz.xtpz.bm.service.impl.BmServiceImpl">
+		<property name="bmDao" ref="bmDao" />
+	</bean>
+	<bean id="bmAction" class="com.dzjz.xtpz.bm.action.BmAction">
+		<property name="bmService" ref="bmService" />
+	</bean>
+	<!-- ajlb -->
+	<bean id="ajlbbmService" class="com.dzjz.xtpz.ajlbbm.service.impl.AjlbbmServiceImpl">
+		<property name="ajlbbmDao" ref="ajlbbmDao" />
+	</bean>
+	<bean id="ajlbAction" class="com.dzjz.xtpz.ajlbbm.action.AjlbbmAction">
+		<property name="ajlbbmService" ref="ajlbbmService" />
+	</bean>
+	
+
+	<!-- gnfl-->
+	<bean id="gnflService" class="com.dzjz.xtpz.gnfl.service.impl.GnflServiceImpl">
+		<property name="gnflDao" ref="gnflDao" />
+	</bean>
+	<bean id="gnflAction" class="com.dzjz.xtpz.gnfl.action.GnflAction">
+		<property name="gnflService" ref="gnflService" />
+	</bean>
+	
+
+	<!-- gndy-->
+	<bean id="gndyService" class="com.dzjz.xtpz.gndy.service.impl.GndyServiceImpl">
+		<property name="gndyDao" ref="gndyDao" />
+	</bean>
+	<bean id="gndyAction" class="com.dzjz.xtpz.gndy.action.GndyAction">
+		<property name="gndyService" ref="gndyService" />
+	</bean>
+	
+	<!-- mbpz-->
+	<bean id="mbpzService" class="com.dzjz.xtpz.mbpz.service.impl.MbpzServiceImpl">
+		<property name="mbpzDao" ref="mbpzDao" />
+		<property name="mjsQxDao" ref="jsQxDao" />
+	</bean>
+	<bean id="mbpzAction" class="com.dzjz.xtpz.mbpz.action.MbpzAction">
+		<property name="mbpzService" ref="mbpzService" />
+	</bean>
+	
+	<!-- SSLB-->
+	<bean id="sslbService" class="com.dzjz.xtpz.sslb.service.impl.SslbServiceImpl">
+		<property name="sslbDao" ref="sslbDao" />
+	</bean>
+	<bean id="sslbAction" class="com.dzjz.xtpz.sslb.action.SslbAction">
+		<property name="sslbService" ref="sslbService" />
+	</bean>
+	
+	<!-- cspz-->
+	<bean id="cspzService" class="com.dzjz.xtpz.cspz.service.impl.CspzServiceImpl">
+		<property name="cspzDao" ref="cspzDao" />
+	</bean>
+	<bean id="cspzAction" class="com.dzjz.xtpz.cspz.action.CspzAction">
+		<property name="cspzService" ref="cspzService" />
+	</bean>
+	
+	<!-- sbxx-->
+	<bean id="sbxxService" class="com.dzjz.xtpz.sbxx.service.impl.SbxxServiceImpl">
+		<property name="sbxxDao" ref="sbxxDao" />
+	</bean>
+	<bean id="sbxxAction" class="com.dzjz.xtpz.sbxx.action.SbxxAction">
+		<property name="sbxxService" ref="sbxxService" />
+	</bean>
+	
+	<!-- rzcx-->
+	<bean id="rzcxService" class="com.dzjz.xtpz.rzcx.service.impl.RzcxServiceImpl">
+		<property name="rzcxDao" ref="rzcxDao" />
+	</bean>
+	<bean id="rzcxAction" class="com.dzjz.xtpz.rzcx.action.RzcxAction">
+		<property name="rzcxService" ref="rzcxService" />
+	</bean>
+	
+	<!-- 卷宗制作 -->
+	<!-- ajjbxx-->
+	<bean id="ajjbxxService" class="com.common.service.impl.AjjbxxServiceImpl">
+		<property name="ajjbxxDao" ref="ajjbxxDao" />
+		<property name="ajlbbmDao1" ref="ajlbbmDao" />
+		<property name="cspzDao" ref="cspzDao" />
+	</bean>
+	<bean id="ajjbxxAction" class="com.common.action.AjjbxxAction">
+		<property name="ajjbxxService" ref="ajjbxxService" />
+	</bean>
+	<!-- jzjbxx-->
+	<bean id="jzjbxxService" class="com.dzjz.jzzz.ajjzzz.service.impl.JzjbxxServiceImpl">
+		<property name="jzjbxxDao" ref="jzjbxxDao" />
+	</bean>
+	<bean id="jzjbxxAction" class="com.dzjz.jzzz.ajjzzz.action.JzjbxxAction">
+		<property name="jzjbxxService" ref="jzjbxxService" />
+	</bean>
+	
+	<!-- yh -->
+	<bean id="yhService" class="com.dzjz.xtpz.qx.service.impl.YhServiceImpl">
+		<property name="yhDao" ref="yhDao" />
+	</bean>
+	<bean id="yhAction" class="com.dzjz.xtpz.qx.action.YhAction">
+		<property name="yhService" ref="yhService" />
+	</bean>
+
+	<!-- js -->
+	<bean id="jsService" class="com.dzjz.xtpz.qx.service.impl.JsServiceImpl">
+		<property name="jsDao" ref="jsDao" />
+	</bean>
+	<bean id="jsAction" class="com.dzjz.xtpz.qx.action.JsAction">
+		<property name="jsService" ref="jsService" />
+	</bean>
+	
+	<!-- jsqx -->
+	<bean id="jsQxService" class="com.dzjz.xtpz.qx.service.impl.JsQxServiceImpl">
+		<property name="jsQxDao" ref="jsQxDao" />
+	</bean>
+	<bean id="jsQxAction" class="com.dzjz.xtpz.qx.action.JsQxAction">
+		<property name="jsQxService" ref="jsQxService" />
+	</bean>
+	<!-- ryqx -->
+	<bean id="ryQxService" class="com.dzjz.xtpz.qx.service.impl.RyQxServiceImpl">
+		<property name="ryQxDao" ref="ryQxDao" />
+	</bean>
+	<bean id="ryQxAction" class="com.dzjz.xtpz.qx.action.RyQxAction">
+		<property name="ryQxService" ref="ryQxService" />
+	</bean>
+	<!-- 人员主菜单 -->
+	<bean id="gnByRyMenuAction" class="com.dzjz.xtpz.qx.action.GnByRyMenuAction">
+		<property name="gnByRyMenuService" ref="gnByRyMenuService" />
+	</bean>
+	<bean id="gnByRyMenuService" class="com.dzjz.xtpz.qx.service.impl.GnByRyMenuServiceImpl">
+		<property name="gnByRyMenuDao" ref="gnByRyMenuDao" />
+	</bean>
+	<!-- 查询案件制作量情况 -->
+	<bean id="cxAjjzzzlAction" class="com.dzjz.tjcx.action.CxAjjzzzlAction">
+		<property name="cxAjjzzzlService" ref="cxAjjzzzlService" />
+	</bean>
+	<bean id="cxAjjzzzlService" class="com.dzjz.tjcx.service.impl.CxAjjzzzlServiceImpl">
+		<property name="cxAjjzzzlDao" ref="cxAjjzzzlDao" />
+	</bean>
+	<!-- 查询案件基本信息情况 -->
+	<bean id="cxAjjbxxAction" class="com.dzjz.tjcx.action.CxAjjbxxAction">
+		<property name="ajjbxxService" ref="ajjbxxService" />
+	</bean>
+	<!-- 统计案件卷宗制作量 -->
+	<bean id="jzzzltjAction" class="com.dzjz.tjbb.action.JzzzltjAction">
+		<property name="jzzzltjService" ref="jzzzltjService" />
+	</bean>
+	<bean id="jzzzltjService" class="com.dzjz.tjbb.service.impl.JzzzltjServiceImpl">
+		<property name="jzzzltjDao" ref="jzzzltjDao" />
+	</bean>
+	<!-- 统计案件卷宗制作率 -->
+	<bean id="jzzzlvtjAction" class="com.dzjz.tjbb.action.JzzzlvtjAction">
+		<property name="jzzzlvtjService" ref="jzzzlvtjService" />
+	</bean>
+	<bean id="jzzzlvtjService" class="com.dzjz.tjbb.service.impl.JzzzlvtjServiceImpl">
+		<property name="jzzzlvtjDao" ref="jzzzlvtjDao" />
+	</bean>
+	<!-- 统计案件卷宗月度统计表 -->
+	<bean id="jzydtjAction" class="com.dzjz.tjbb.action.JzydtjAction">
+		<property name="jzydtjService" ref="jzydtjService" />
+	</bean>
+	<bean id="jzydtjService" class="com.dzjz.tjbb.service.impl.JzydtjServiceImpl">
+		<property name="jzydtjDao" ref="jzydtjDao" />
+	</bean>
+	<!-- 统计案件卷宗制作工作量 -->
+	<bean id="jzzzgzltjAction" class="com.dzjz.tjbb.action.JzzzgzltjAction">
+		<property name="jzzzgzltjService" ref="jzzzgzltjService" />
+	</bean>
+	<bean id="jzzzgzltjService" class="com.dzjz.tjbb.service.impl.JzzzgzltjServiceImpl">
+		<property name="jzzzgzltjDao" ref="jzzzgzltjDao" />
+		<property name="jzydtjDao1" ref="jzydtjDao" />
+	</bean>
+	<!-- 卷宗存储统计-->
+	<bean id="jzcctjAction" class="com.dzjz.tjbb.action.JzcctjAction">
+		<property name="jzcctjService" ref="jzcctjService" />
+	</bean>
+	<bean id="jzcctjService" class="com.dzjz.tjbb.service.impl.JzcctjServiceImpl">
+		<property name="jzcctjDao" ref="jzcctjDao" />
+	</bean>
+	<!-- 卷宗分配-->
+	<bean id="lsajbdAction" class="com.dzjz.jzyj.action.LsajbdAction">
+		<property name="lsajbdService" ref="lsajbdService" />
+	</bean>
+	<bean id="lsajbdService" class="com.dzjz.jzyj.service.impl.LsajbdServiceImpl">
+		<property name="lsajbdDao" ref="lsajbdDao" />
+	</bean>
+	<!-- 卷宗阅卷-->
+	<bean id="lsajyjAction" class="com.dzjz.jzyj.action.LsajyjAction">
+		<property name="lsajyjService" ref="lsajyjService" />
+	</bean>
+	<bean id="lsajyjService" class="com.dzjz.jzyj.service.impl.LsajyjServiceImpl">
+		<property name="lsajyjDao" ref="lsajyjDao" />
+	</bean>
+	
+</beans>

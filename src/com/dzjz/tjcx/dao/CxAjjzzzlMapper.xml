@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dzjz.tjcx.dao.CxAjjzzzlDao">
+
+		<!--配置返回游标中别名对应的resultMap -->  
+	<resultMap type ="java.util.HashMap" id= "dwjzzzcxMap">
+     <result column ="CBDW_BM" property="CBDW_BM" javaType="java.lang.String" jdbcType="VARCHAR"/>  
+     <result column ="CBDW_MC" property="CBDW_MC" javaType="java.lang.String" jdbcType="VARCHAR"/>  
+     <result column ="CBBM_BM" property="CBBM_BM" javaType="java.lang.String" jdbcType="VARCHAR"/>  
+     <result column ="CBBM_MC" property="CBBM_MC" javaType="java.lang.String" jdbcType="VARCHAR"/>  
+     <result column ="AJLB_BM" property="AJLB_BM" javaType="java.lang.String" jdbcType="VARCHAR" />  
+     <result column ="AJMC" property="AJMC" javaType="java.lang.String" jdbcType="VARCHAR"/>  
+     <result column ="WJYNUM" property="WJYNUM" javaType="java.lang.String" jdbcType="VARCHAR"/>  
+     <result column ="JZBH" property="JZBH" javaType="java.lang.String" jdbcType="VARCHAR" />  
+     <result column ="BMSAH" property="BMSAH" javaType="java.lang.String" jdbcType="VARCHAR"/>  
+     <result column ="AJLB_MC" property="AJLB_MC" javaType="java.lang.String" jdbcType="VARCHAR" />  
+     <result column ="JNUM" property="JNUM" javaType="java.lang.String" jdbcType="INTEGER"/>  
+     <result column ="WJNUM" property="WJNUM" javaType="java.lang.String" jdbcType="INTEGER"/>  
+     <result column ="RO" property="RO" javaType="java.lang.String" jdbcType="INTEGER" />  
+	</resultMap >  
+
+	<select id ="dwjzzzcx" parameterType= "java.util.HashMap" statementType="CALLABLE" >  
+	      <!--注明statementType="CALLABLE"表示调用存储过程-->  
+	       <![CDATA[
+	           {CALL pkg_dzjz_report.proc_report_dwjzzzcx(
+	           									 #{dwbm,mode=IN,jdbcType=CHAR},
+	           									 #{gh,mode=IN,jdbcType=CHAR},
+	           									'',
+	           									'CBDW_BM ASC',
+	           									'1',
+	           									'10000',
+	           									#{p_count, mode=OUT, jdbcType=INTEGER},
+	              								#{p_cursor, mode=OUT, jdbcType=CURSOR, resultMap=dwjzzzcxMap},
+	     										#{p_errmsg, mode=OUT,jdbcType=VARCHAR}
+	           )}    
+	       ]]>
+	    
+	</select > 
+	
+</mapper>

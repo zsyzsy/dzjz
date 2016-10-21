@@ -1,0 +1,130 @@
+/**
+ * 
+ */
+package com.dzjz.xtpz.bm.service.impl;
+
+import java.util.Collection;
+import java.util.List;
+
+import com.dzjz.xtpz.bm.dao.BmDao;
+import com.dzjz.xtpz.bm.po.Bm;
+import com.dzjz.xtpz.bm.service.BmService;
+
+/**
+ * @author Administrator
+ *
+ */
+public class BmServiceImpl implements BmService{
+	private BmDao bmDao;
+
+	/* (non-Javadoc)
+	 * @see com.common.CommInterface#findAll()
+	 */
+	@Override
+	public Collection<Bm> findAll() {
+		// TODO Auto-generated method stub
+		return bmDao.findAll();
+	}
+
+	
+	/* (non-Javadoc)
+	 * @see com.common.CommInterface#add(java.lang.Object)
+	 */
+	@Override
+	public void add(Bm t) {
+		// TODO Auto-generated method stub
+		bmDao.add(t);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.common.CommInterface#delete(java.lang.Object)
+	 */
+	@Override
+	public void delete(Bm t) {
+		// TODO Auto-generated method stub
+		t.setSfsc("Y");
+		bmDao.delete(t);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.common.CommInterface#update(java.lang.Object)
+	 */
+	@Override
+	public void update(Bm t) {
+		// TODO Auto-generated method stub
+		bmDao.update(t);
+	}
+
+
+	/**
+	 * @return the bmDao
+	 */
+	public BmDao getBmDao() {
+		return bmDao;
+	}
+
+	/**
+	 * @param bmDao the bmDao to set
+	 */
+	public void setBmDao(BmDao bmDao) {
+		this.bmDao = bmDao;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see com.common.CommInterface#findAllByMap(java.lang.Object)
+	 */
+	@Override
+	public Bm findAllByMap(Bm t) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see com.common.CommInterface#queryByMap(java.lang.Object)
+	 */
+	@Override
+	public Collection<Bm> queryByMap(Bm t) {
+		// TODO Auto-generated method stub
+		return bmDao.queryByMap(t);
+	}
+
+
+	/* (non-Javadoc)
+	 * @see com.common.CommInterface#newId(java.lang.String)
+	 */
+	@Override
+	public String newId(String param) {
+		// TODO Auto-generated method stub
+		List<Bm> list=(List<Bm>) maxId(param);
+		String newId1=list.get(0).getBmbm();
+		//将字符串转为数字+1生成最新唯一id
+		System.out.println(newId1);
+		int newId2=Integer.parseInt(newId1.trim())+1;
+		//将最新id转换成字符串
+		System.out.println(newId2);
+		String newId=""+newId2;
+		String newId3="";
+		//部门编码长度4
+		if(newId.length()!=4&&newId.length()<4){
+			for(int i=0;i<4-newId.length();i++){
+				newId3+="0";
+			}
+		}
+		return newId3+newId;
+	}
+
+
+	/* (non-Javadoc)
+	 * @see com.common.CommInterface#maxId(java.lang.String)
+	 */
+	@Override
+	public Collection<Bm> maxId(String param) {
+		// TODO Auto-generated method stub
+		return bmDao.maxId(param);
+	}
+
+
+
+}

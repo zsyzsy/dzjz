@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dzjz.jzzz.ajjzzz.dao.JzjbxxDao">
+	<resultMap id="jzjbxxMap" type="com.dzjz.jzzz.ajjzzz.po.Jzjbxx">
+		<id property="jzbh" column="jzbh" />
+		<result property="sfsc" column="sfsc" />
+		<result property="cjsj" column="cjsj" />
+		<result property="zhxgsj" column="zhxgsj" />
+		<result property="fqdwbm" column="fqdwbm" />
+		<result property="fql" column="fql" />
+		<result property="dwbm" column="dwbm" />
+		<result property="bmsah" column="bmsah" />
+		<result property="tysah" column="tysah" />
+		<result property="jzmc" column="jzmc" />
+		<result property="jzlj" column="jzlj" />
+		<result property="jzscsj" column="jzscsj" />
+		<result property="jzscrgh" column="jzscrgh" />
+		<result property="jzscrxm" column="jzscrxm" />
+		<result property="jzms" column="jzms" />
+		<result property="jzxgh" column="jzxgh" />
+		<result property="sfkygx" column="sfkygx" />
+		<result property="gxywbmjh" column="gxywbmjh" />
+		<result property="mrsfgkpz" column="mrsfgkpz" />
+		<result property="accomplices" column="accomplices" />
+		<result property="ajmb_bm" column="ajmb_bm" />
+		<result property="ajmb_mc" column="ajmb_mc" />
+		<result property="idnumber" column="idnumber" />
+		<result property="isrecord" column="isrecord" />
+		<result property="suspectname" column="suspectname" />
+	</resultMap>
+	<!--通过条件查询信息 -->
+	<select id="queryByMap" resultMap="jzjbxxMap" parameterType="com.dzjz.jzzz.ajjzzz.po.Jzjbxx" >
+	<![CDATA[  
+		select * from yx_dzjz_jzjbxx t join tyyw_gg_ajjbxx t1 on  t.bmsah=t1.bmsah  where t.sfsc='N' and t.jzxgh like '{"IsLock":true,%'
+			]]>
+			<if test="jzbh != null and '' != jzbh">  
+            <![CDATA[  
+              and  trim(t.jzbh) = #{jzbh}  
+            ]]>  
+            </if>
+	</select>
+		<!-- 解锁 -->
+	<update id="delete" parameterType="com.dzjz.jzzz.ajjzzz.po.Jzjbxx">
+			update yx_dzjz_jzjbxx t  set t.jzxgh=#{jzxgh} where  t.jzbh = #{jzbh}
+	</update>
+	
+</mapper>

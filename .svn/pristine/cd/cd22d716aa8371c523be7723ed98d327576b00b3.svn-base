@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dzjz.tjbb.dao.JzzzltjDao">
+
+		<!--配置返回游标中别名对应的resultMap -->  
+	<resultMap type ="java.util.HashMap" id= "dwjzzztjMap">
+     <result column ="RO" property="RO" javaType="java.lang.Integer" jdbcType="INTEGER" />  
+     <result column ="CBDW_BM" property="CBDW_BM" javaType="java.lang.String" jdbcType="VARCHAR"/>  
+     <result column ="CBDW_MC" property="CBDW_MC" javaType="java.lang.String" jdbcType="VARCHAR"/>  
+     <result column ="AJNUM" property="AJNUM" javaType="java.lang.Integer" jdbcType="INTEGER" />  
+     <result column ="JNUM" property="JNUM" javaType="java.lang.Integer" jdbcType="INTEGER"/>  
+     <result column ="WJNUM" property="WJNUM" javaType="java.lang.Integer" jdbcType="INTEGER"/>  
+     <result column ="WJYNUM" property="WJYNUM" javaType="java.lang.Integer" jdbcType="INTEGER"/>  
+	</resultMap >  
+	<resultMap type ="java.util.HashMap" id= "dwjzzzywMap">
+     <result column ="ywbm" property="ywbm" javaType="java.lang.Integer" jdbcType="CHAR" />  
+     <result column ="ywmc" property="ywmc" javaType="java.lang.String" jdbcType="VARCHAR"/>  
+     <result column ="ajnum" property="ajnum" javaType="java.lang.Integer" jdbcType="INTEGER"/>  
+     <result column ="jnum" property="jnum" javaType="java.lang.Integer" jdbcType="INTEGER"/>  
+     <result column ="wjnum" property="wjnum" javaType="java.lang.Integer" jdbcType="INTEGER"/>  
+     <result column ="wjynum" property="wjynum" javaType="java.lang.Integer" jdbcType="INTEGER"/>  
+	</resultMap >  
+<!-- 单位卷宗制作情况统计 -->
+	<select id ="dwjzzztj" parameterType= "java.util.HashMap" statementType="CALLABLE" >  
+	      <!--注明statementType="CALLABLE"表示调用存储过程-->  
+	       <![CDATA[
+	           {CALL pkg_dzjz_report.proc_report_dwjzzztj(
+	           									 #{dwbm,mode=IN,jdbcType=CHAR},
+	           									 #{gh,mode=IN,jdbcType=CHAR},
+	           									 #{get_where,mode=IN,jdbcType=VARCHAR},
+	           									'',
+	           									'CBDW_BM ASC',
+	           									'1',
+	           									'10000',
+	           									#{p_count, mode=OUT, jdbcType=INTEGER},
+	              								#{p_cursor, mode=OUT, jdbcType=CURSOR, resultMap=dwjzzztjMap},
+	     										#{p_errmsg, mode=OUT,jdbcType=VARCHAR}
+	           )}    
+	       ]]>
+	    
+	</select > 
+<!-- 	卷宗制作情况业务类型统计 -->
+<select id ="dwjzzzyw" parameterType= "java.util.HashMap" statementType="CALLABLE" >  
+	      <!--注明statementType="CALLABLE"表示调用存储过程-->  
+	       <![CDATA[
+	           {CALL pkg_dzjz_report.proc_report_dwjzzzyw(
+	           									 #{dwbm,mode=IN,jdbcType=CHAR},
+	           									 #{gh,mode=IN,jdbcType=CHAR},
+	           									 #{get_where,mode=IN,jdbcType=VARCHAR},
+	           									'ywbm ASC',
+	              								#{p_cursor, mode=OUT, jdbcType=CURSOR, resultMap=dwjzzzywMap},
+	     										#{p_errmsg, mode=OUT,jdbcType=VARCHAR}
+	           )}    
+	       ]]>
+	    
+	</select > 
+	
+</mapper>

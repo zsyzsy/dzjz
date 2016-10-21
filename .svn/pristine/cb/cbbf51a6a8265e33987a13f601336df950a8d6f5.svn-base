@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dzjz.xtpz.ajlbbm.dao.AjlbbmDao">
+
+	<resultMap id="ajlbbmMap" type="com.dzjz.xtpz.ajlbbm.po.Ajlbbm">
+		<id property="ajlbbm" column="ajlbbm" />
+		<result property="ywbm" column="ywbm" />
+		<result property="ajlbmc" column="ajlbmc" />
+		<result property="ajsljc" column="ajsljc" />
+		<result property="sfsc" column="sfsc" />
+		<result property="xh" column="xh" />
+	</resultMap>
+	<!-- 查询所有部门 -->
+	<select id="findAll" resultMap="ajlbbmMap" >
+		SELECT t.* FROM XT_DM_AJLBBM t 
+  				where t.sfsc='N' 
+	</select>
+	<!--通过条件查询部门信息 -->
+	<select id="queryByMap" resultMap="ajlbbmMap" >
+	<![CDATA[  
+		    SELECT t.* FROM XT_DM_AJLBBM t 
+   				where t.sfsc='N' 
+			]]>
+			<if test="ajlbbm != null and '' != ajlbbm">  
+            <![CDATA[  
+              AND t.ajlbbm=#{ajlbbm}  
+            ]]>  
+            </if>
+	</select>
+	
+
+		<!-- 查询单位最大值 --><!-- sql可优化 -->
+	<select id="maxId" resultMap="ajlbbmMap">
+		select t1.* from XT_ZZJG_BMBM  t1 
+			where t1.dwbm=#{param} and t1.bmbm= (
+				SELECT max(t.bmbm) FROM XT_ZZJG_BMBM  t where t.dwbm=#{param}
+				)
+	</select>
+</mapper>

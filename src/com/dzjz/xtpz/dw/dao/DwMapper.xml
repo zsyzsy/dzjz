@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dzjz.xtpz.dw.dao.DwDao">
+	<resultMap id="dwMap" type="com.dzjz.xtpz.dw.po.Dw">
+		<id property="dwbm" column="DWBM" />
+		<result property="dwmc" column="DWMC" />
+		<result property="fdwbm" column="FDWBM" />
+		<result property="dwjb" column="DWJB" />
+		<result property="sfsc" column="SFSC" />
+		<result property="dwjc" column="DWJC" />
+		<result property="dwsx" column="DWSX" />
+	</resultMap>
+
+	<insert id="add" parameterType="com.dzjz.xtpz.dw.po.Dw">
+		INSERT INTO XT_ZZJG_DWBM(
+			DWBM,
+			DWMC,
+			FDWBM,
+			DWJB,
+			DWJC,
+			SFSC,
+			DWSX
+			)
+		VALUES (
+			#{dwbm},
+			#{dwmc},
+			#{fdwbm},
+			#{dwjb},
+			#{dwjc},
+			#{sfsc},
+			#{dwsx}
+			)
+	</insert>
+	
+	<select id="queryDw" resultMap="dwMap" >
+		select t1.* from XT_ZZJG_DWBM  t1 where 1=1  AND t1.sfsc='N'  
+		<if test="dwmc != null and '' != dwmc">  
+            <![CDATA[  
+             and t1.dwmc like '%${dwmc}%' or t1.dwjc like '%${dwmc}%'
+            ]]>  
+            </if>
+	</select>
+	<!-- 查询单位最大值 -->
+	<select id="IdQueryMax" resultMap="dwMap" >
+		select t1.* from XT_ZZJG_DWBM  t1 
+			where t1.dwbm= (
+				SELECT max(t.dwbm) FROM XT_ZZJG_DWBM  t 
+				)
+	</select>
+	<!-- 查询符合条件的数据 --><!-- 数据少暂不单独写 -->
+	<select id="queryByMap" resultMap="dwMap" >
+	<![CDATA[  
+		select t1.* from XT_ZZJG_DWBM  t1 where 1=1 
+			]]>
+			
+              AND t1.sfsc='N'  
+           
+			<if test="dwbm != null and '' != dwbm">  
+            <![CDATA[  
+              AND t1.dwbm=#{dwbm}  
+            ]]>  
+            </if>
+	</select>
+	<update id="updata" parameterType="com.dzjz.xtpz.dw.po.Dw" >
+        update XT_ZZJG_DWBM t set t.dwmc=#{dwmc} ,t.dwjc=#{dwjc},t.dwjb=#{dwjb} where t.dwbm=#{dwbm}
+    </update>
+    <!-- 逻辑删除单位 -->
+	<update id="delete" parameterType="com.dzjz.xtpz.dw.po.Dw" >
+        update XT_ZZJG_DWBM t set t.sfsc=#{sfsc}  where t.dwbm=#{dwbm}
+    </update>
+    
+<!-- 	<delete id="delete" parameterType="com.dzjz.xtpz.dw.po.Dw" > -->
+<!--         delete XT_ZZJG_DWBM t  where t.dwbm=#{dwbm} -->
+<!--     </delete> -->
+</mapper>

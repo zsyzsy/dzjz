@@ -1,0 +1,228 @@
+/**
+ * 
+ */
+package com.dzjz.xtpz.qx.action;
+
+import java.util.List;
+
+import com.common.JsonListResult;
+import com.common.ListToJson;
+import com.dzjz.xtpz.bm.po.Bm;
+import com.dzjz.xtpz.dw.po.Dw;
+import com.dzjz.xtpz.qx.po.Js;
+import com.dzjz.xtpz.qx.service.JsService;
+
+/**
+ * @author Administrator
+ *
+ */
+public class JsAction {
+	private JsService jsService;
+	
+	private List<Js> jss;
+	
+	private Js js;
+	
+	private Dw dw;
+	
+	private Bm bm;
+	
+	private String dwbm ;
+	
+	private String bmbm;
+	
+	private String jsbm;
+	
+	private String jsmc;
+	
+	private String jsxh;
+	
+	private JsonListResult jsonListResult;
+	
+	public String queryList(){
+		jss=(List<Js>) jsService.findAll();
+		jsonListResult=new JsonListResult(jss);
+		return "queryList";
+	}
+	
+	public String queryByMap(){
+		js=new Js();
+		js.setDwbm(dwbm);
+		js.setBmbm(bmbm);
+		jss=(List<Js>) jsService.queryByMap(js);
+		jsonListResult=new JsonListResult(jss);
+		
+		
+		return "queryByMap";
+	}
+	public String delete(){
+		
+		
+		return "delete";
+	}
+
+	public String update(){
+		
+		return "update";
+	}
+
+	public String add(){
+		
+		return "add";
+	}
+	/**
+	 * @return the jsService
+	 */
+	public JsService getJsService() {
+		return jsService;
+	}
+
+	/**
+	 * @param jsService the jsService to set
+	 */
+	public void setJsService(JsService jsService) {
+		this.jsService = jsService;
+	}
+
+	/**
+	 * @return the jss
+	 */
+	public List<Js> getJss() {
+		return jss;
+	}
+
+	/**
+	 * @param jss the jss to set
+	 */
+	public void setJss(List<Js> jss) {
+		this.jss = jss;
+	}
+
+	/**
+	 * @return the js
+	 */
+	public Js getJs() {
+		return js;
+	}
+
+	/**
+	 * @param js the js to set
+	 */
+	public void setJs(Js js) {
+		this.js = js;
+	}
+
+	/**
+	 * @return the dw
+	 */
+	public Dw getDw() {
+		return dw;
+	}
+
+	/**
+	 * @param dw the dw to set
+	 */
+	public void setDw(Dw dw) {
+		this.dw = dw;
+	}
+
+	/**
+	 * @return the bm
+	 */
+	public Bm getBm() {
+		return bm;
+	}
+
+	/**
+	 * @param bm the bm to set
+	 */
+	public void setBm(Bm bm) {
+		this.bm = bm;
+	}
+
+	/**
+	 * @return the jsonListResult
+	 */
+	public JsonListResult getJsonListResult() {
+		return jsonListResult;
+	}
+
+	/**
+	 * @param jsonListResult the jsonListResult to set
+	 */
+	public void setJsonListResult(JsonListResult jsonListResult) {
+		this.jsonListResult = jsonListResult;
+	}
+
+	/**
+	 * @return the dwbm
+	 */
+	public String getDwbm() {
+		return dwbm;
+	}
+
+	/**
+	 * @param dwbm the dwbm to set
+	 */
+	public void setDwbm(String dwbm) {
+		this.dwbm = dwbm;
+	}
+
+	/**
+	 * @return the bmbm
+	 */
+	public String getBmbm() {
+		return bmbm;
+	}
+
+	/**
+	 * @param bmbm the bmbm to set
+	 */
+	public void setBmbm(String bmbm) {
+		this.bmbm = bmbm;
+	}
+
+	/**
+	 * @return the jsbm
+	 */
+	public String getJsbm() {
+		return jsbm;
+	}
+
+	/**
+	 * @param jsbm the jsbm to set
+	 */
+	public void setJsbm(String jsbm) {
+		this.jsbm = jsbm;
+	}
+
+	/**
+	 * @return the jsmc
+	 */
+	public String getJsmc() {
+		return jsmc;
+	}
+
+	/**
+	 * @param jsmc the jsmc to set
+	 */
+	public void setJsmc(String jsmc) {
+		this.jsmc = jsmc;
+	}
+
+	/**
+	 * @return the jsxh
+	 */
+	public String getJsxh() {
+		return jsxh;
+	}
+
+	/**
+	 * @param jsxh the jsxh to set
+	 */
+	public void setJsxh(String jsxh) {
+		this.jsxh = jsxh;
+	}
+	
+
+}

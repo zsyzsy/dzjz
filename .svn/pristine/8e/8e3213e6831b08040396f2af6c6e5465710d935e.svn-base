@@ -1,0 +1,175 @@
+/**
+ * 
+ */
+package com.dzjz.xtpz.gnfl.action;
+
+import java.util.List;
+
+import com.common.JsonListResult;
+import com.common.ListToJson;
+import com.dzjz.xtpz.gnfl.po.Gnfl;
+import com.dzjz.xtpz.gnfl.service.GnflService;
+
+/**
+ * @author change
+ *
+ */
+public class GnflAction {
+	private GnflService gnflService;
+	private List<Gnfl> gnfls;
+	private Gnfl gnfl;
+	private ListToJson listToJson=new ListToJson();
+	private JsonListResult jsonListResult;
+	private String flmc;
+	private String flbm;
+	private String flxh;
+	
+	public String input(){
+		
+		return "input";
+	}
+	
+	public String queryList(){
+		gnfls=(List<Gnfl>) gnflService.findAll();
+		jsonListResult=new JsonListResult(gnfls);
+		return "queryList";
+	}
+	public String add(){
+		String newId=gnflService.newId("");
+		gnfl=new Gnfl();
+		gnfl.setFlmc(flmc);
+		gnfl.setFlbm(newId);
+		gnfl.setFlxh(Integer.parseInt(flxh));
+		gnflService.add(gnfl);
+		return "add";
+	}
+	
+	public String update(){
+		Gnfl gnfl1=new Gnfl();
+		gnfl1.setFlbm(flbm);
+		gnfls=(List<Gnfl>) gnflService.queryByMap(gnfl1);
+		gnfl=gnfls.get(0);
+		gnfl.setFlmc(flmc);
+		gnfl.setFlxh(Integer.parseInt(flxh));
+		gnflService.update(gnfl);
+		
+		return "update";
+	}
+	
+	public String queryByMap(){
+		Gnfl gnfl1=new Gnfl();
+		gnfl1.setFlbm(flbm);
+		gnfls=(List<Gnfl>) gnflService.queryByMap(gnfl1);
+//		gnfl=gnfls.get(0);
+//		gnfl.setFlmc(flmc);
+//		gnfl.setFlxh(Integer.parseInt(flxh));
+//		gnfls=(List<Gnfl>) gnflService.queryByMap(gnfl);
+		jsonListResult=new JsonListResult(gnfls);
+		return "queryByMap";
+	}
+
+	public String delete(){
+		Gnfl gnfl1=new Gnfl();
+		gnfl1.setFlbm(flbm);
+		gnfls=(List<Gnfl>) gnflService.queryByMap(gnfl1);
+		gnfl=gnfls.get(0);
+		gnflService.delete(gnfl);
+		return "delete";
+	}
+	/**
+	 * @return the gnflService
+	 */
+	public GnflService getGnflService() {
+		return gnflService;
+	}
+	/**
+	 * @param gnflService the gnflService to set
+	 */
+	public void setGnflService(GnflService gnflService) {
+		this.gnflService = gnflService;
+	}
+	/**
+	 * @return the gnfls
+	 */
+	public List<Gnfl> getGnfls() {
+		return gnfls;
+	}
+	/**
+	 * @param gnfls the gnfls to set
+	 */
+	public void setGnfls(List<Gnfl> gnfls) {
+		this.gnfls = gnfls;
+	}
+	/**
+	 * @return the gnfl
+	 */
+	public Gnfl getGnfl() {
+		return gnfl;
+	}
+	/**
+	 * @param gnfl the gnfl to set
+	 */
+	public void setGnfl(Gnfl gnfl) {
+		this.gnfl = gnfl;
+	}
+	/**
+	 * @return the listToJson
+	 */
+	public ListToJson getListToJson() {
+		return listToJson;
+	}
+	/**
+	 * @param listToJson the listToJson to set
+	 */
+	public void setListToJson(ListToJson listToJson) {
+		this.listToJson = listToJson;
+	}
+	/**
+	 * @return the jsonListResult
+	 */
+	public JsonListResult getJsonListResult() {
+		return jsonListResult;
+	}
+	/**
+	 * @param jsonListResult the jsonListResult to set
+	 */
+	public void setJsonListResult(JsonListResult jsonListResult) {
+		this.jsonListResult = jsonListResult;
+	}
+	/**
+	 * @return the flmc
+	 */
+	public String getFlmc() {
+		return flmc;
+	}
+	/**
+	 * @param flmc the flmc to set
+	 */
+	public void setFlmc(String flmc) {
+		this.flmc = flmc;
+	}
+	/**
+	 * @return the flbm
+	 */
+	public String getFlbm() {
+		return flbm;
+	}
+	/**
+	 * @param flbm the flbm to set
+	 */
+	public void setFlbm(String flbm) {
+		this.flbm = flbm;
+	}
+	/**
+	 * @return the flxh
+	 */
+	public String getFlxh() {
+		return flxh;
+	}
+	/**
+	 * @param flxh the flxh to set
+	 */
+	public void setFlxh(String flxh) {
+		this.flxh = flxh;
+	}
+}

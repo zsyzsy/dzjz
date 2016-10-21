@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dzjz.tjbb.dao.JzydtjDao">
+
+		<!--配置返回游标中别名对应的resultMap -->  
+	<resultMap type ="java.util.HashMap" id= "casegroupmouthMap">
+     <result column ="mm" property="mm" javaType="java.lang.String" jdbcType="VARCHAR" />  
+     <result column ="ajcount" property="ajcount" javaType="java.lang.Integer" jdbcType="INTEGER"/>  
+     <result column ="jcount" property="jcount" javaType="java.lang.Integer" jdbcType="INTEGER"/>  
+     <result column ="wcount" property="wcount" javaType="java.lang.Integer" jdbcType="INTEGER" />  
+     <result column ="pagecount" property="pagecount" javaType="java.lang.Integer" jdbcType="INTEGER"/>  
+	</resultMap >  
+	<resultMap id="ryjsBydwghMap" type="com.dzjz.xtpz.qx.po.Ryjsfp">
+		<result property="dwbm" column="dwbm" javaType="java.lang.String" jdbcType="CHAR"/>
+		<result property="bmbm" column="bmbm" javaType="java.lang.String" jdbcType="CHAR"/>
+		<result property="jsbm" column="jsbm" javaType="java.lang.String" jdbcType="CHAR"/>
+		<result property="gh" column="gh" javaType="java.lang.String" jdbcType="CHAR"/>
+		<result property="zjldgh" column="zjldgh" javaType="java.lang.String" jdbcType="CHAR"/>
+	
+	</resultMap>
+	
+<!-- 卷宗工作量查询 （按人员） -->
+	<select id ="casegroupmouth" parameterType= "java.util.HashMap" statementType="CALLABLE" >  
+	      <!--注明statementType="CALLABLE"表示调用存储过程-->  
+	       <![CDATA[
+	           {CALL pkg_dzjz_report.proc_report_casegroupmouth(
+	           									 #{get_where,mode=IN,jdbcType=VARCHAR},
+	           									 '',
+	           									'mm',
+	              								#{p_cursor, mode=OUT, jdbcType=CURSOR, resultMap=casegroupmouthMap},
+	     										#{p_errmsg, mode=OUT,jdbcType=VARCHAR}
+	           )}    
+	       ]]>
+	</select > 
+	<select id ="ryjsBydwgh" parameterType= "java.util.HashMap" resultMap="ryjsBydwghMap">
+	 <![CDATA[ 
+		select t2.* from  XT_QX_RYJSFP t2 where   t2.dwbm=#{dwbm} 
+		]]>  
+		<if test="gh != null and '' != gh">  
+	            <![CDATA[  
+	               AND t2.gh=#{gh}  
+	             ]]>   
+	            </if>
+		<if test="dlbm != null and '' != dlbm">  
+	            <![CDATA[  
+	               AND t2.gh=(select gh from XT_ZZJG_RYBM t where t.dwbm=#{dwbm} and t.dlbm=#{dlbm})  
+	             ]]>   
+	            </if>
+	
+	
+	 </select>
+	
+</mapper>

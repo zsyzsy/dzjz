@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dzjz.xtpz.qx.dao.JsDao">
+
+	<resultMap id="jsMap" type="com.dzjz.xtpz.qx.po.Js">
+	
+		<id property="dwbm" column="dwbm" />
+		<id property="bmbm" column="bmbm" />
+		<id property="jsbm" column="jsbm" />
+		<result property="jsmc" column="jsmc" />
+		<result property="jsxh" column="jsxh" />
+		<result property="spjsbm" column="spjsbm" />
+		
+	</resultMap>
+	<!--通过条件查询人员信息 -->
+	<select id="queryByMap" resultMap="jsMap" >
+	<![CDATA[  
+		    select t.* from xt_qx_jsbm t where 1=1
+			]]>
+			<if test="dwbm != null and '' != dwbm">  
+            <![CDATA[  
+              AND t.dwbm=#{dwbm}  
+            ]]>  
+            </if>
+			<if test="bmbm != null and '' != bmbm">  
+            <![CDATA[  
+              AND t.bmbm=#{bmbm}  
+            ]]>  
+            </if>
+			<if test="jsbm != null and '' != jsbm">  
+            <![CDATA[  
+              AND t.jsbm=#{jsbm}  
+            ]]>  
+            </if>
+	</select>
+	
+
+</mapper>

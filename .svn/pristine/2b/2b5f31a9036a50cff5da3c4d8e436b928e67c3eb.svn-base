@@ -1,0 +1,363 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dzjz.xtpz.qx.dao.JsQxDao">
+	
+	<resultMap id="queryQxByDwBmJsMap" type ="java.util.HashMap">
+	 <result column ="qxbm" property="qxbm" javaType="java.lang.String" jdbcType="VARCHAR"/>  
+     <result column ="jsbm" property="jsbm" javaType="java.lang.String" jdbcType="VARCHAR" />  
+     <result column ="qxlx" property="jsbm" javaType="java.lang.Integer" jdbcType="INTEGER" />  
+     <result column ="qxmc" property="qxmc" javaType="java.lang.String" jdbcType="VARCHAR"/>  
+     <result column ="dwbm" property="dwbm" javaType="java.lang.String" jdbcType="VARCHAR"/>  
+     <result column ="bmbm" property="bmbm" javaType="java.lang.String" jdbcType="VARCHAR"/>  
+	</resultMap>
+		<!--配置返回游标中别名对应的resultMap -->  
+	<resultMap type ="java.util.HashMap" id= "getSearchListMap">
+     <result column ="mc" property="mc" javaType="java.lang.String" jdbcType="VARCHAR"/>  
+     <result column ="fbm" property="fbm" javaType="java.lang.String" jdbcType="VARCHAR" />  
+     <result column ="dw" property="dw" javaType="java.lang.String" jdbcType="VARCHAR"/>  
+	</resultMap >  
+	<resultMap type ="java.util.HashMap" id= "dwinfoMap">
+     <result column ="dwmc" property="dwmc" javaType="java.lang.String" jdbcType="VARCHAR"/>  
+     <result column ="dwjc" property="dwmc" javaType="java.lang.String" jdbcType="VARCHAR" />  
+     <result column ="dwjb" property="dwmc" javaType="java.lang.String" jdbcType="CHAR"/>  
+	</resultMap >  
+	<resultMap id="bminfoMap" type="java.util.HashMap">
+	 <result column ="bmjc" property="bmjc" javaType="java.lang.String" jdbcType="VARCHAR"/>  
+     <result column ="bmxh" property="bmxh" javaType="java.lang.Integer" jdbcType="INTEGER" />  
+     <result column ="bz" property="bz" javaType="java.lang.String" jdbcType="VARCHAR"/>  
+     <result column ="fbmbm" property="fbmbm" javaType="java.lang.String" jdbcType="CHAR"/>  
+	</resultMap>
+	<resultMap id="jsinfoMap" type="java.util.HashMap">
+	 <result column ="bm" property="bm" javaType="java.lang.String" jdbcType="CHAR"/>  
+     <result column ="mc" property="mc" javaType="java.lang.String" jdbcType="VARCHAR" />  
+	</resultMap>
+	<resultMap id="wfpGndyByJsMap" type="java.util.HashMap">
+		<result property="gnbm" column="gnbm" javaType="java.lang.String" jdbcType="CHAR"/>
+		<result property="gnmc" column="gnmc" javaType="java.lang.String" jdbcType="VARCHAR"/>
+		<result property="gnsm" column="gnsm" javaType="java.lang.String" jdbcType="VARCHAR"/>
+		<result property="gnct" column="gnct" javaType="java.lang.String" jdbcType="VARCHAR"/>
+		<result property="gnxsmc" column="gnxsmc" javaType="java.lang.String" jdbcType="VARCHAR"/>
+		<result property="gnfl" column="gnfl" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	</resultMap>
+	<resultMap id="ajlbqxMap" type="java.util.HashMap">
+		<result property="ajlbbm" column="ajlbbm" javaType="java.lang.String" jdbcType="CHAR"/>
+		<result property="ajlbmc" column="ajlbmc" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	</resultMap>
+	<resultMap id="dwqxMap" type="java.util.HashMap">
+		<result property="qxbm" column="qxbm" javaType="java.lang.String" jdbcType="VARCHAR"/>
+		<result property="jsbm" column="jsbm" javaType="java.lang.String" jdbcType="VARCHAR"/>
+		<result property="qxlx" column="qxlx" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+		<result property="dwmc" column="dwmc" javaType="java.lang.String" jdbcType="VARCHAR"/>
+		<result property="dwbm" column="dwbm" javaType="java.lang.String" jdbcType="VARCHAR"/>
+		<result property="bmbm" column="bmbm" javaType="java.lang.String" jdbcType="VARCHAR"/>
+	</resultMap>
+	<resultMap id="ryBydwjsbmMap" type="java.util.HashMap">
+		<result property="dlbm" column="dlbm" javaType="java.lang.String" jdbcType="VARCHAR"/>
+		<result property="mc" column="mc" javaType="java.lang.String" jdbcType="VARCHAR"/>
+		<result property="yddhhm" column="yddhhm" javaType="java.lang.String" jdbcType="VARCHAR"/>
+		<result property="gzzh" column="gzzh" javaType="java.lang.String" jdbcType="VARCHAR"/>
+		<result property="gh" column="gh" javaType="java.lang.String" jdbcType="CHAR"/>
+		<result property="dwbm" column="dwbm" javaType="java.lang.String" jdbcType="CHAR"/>
+		<result property="xb" column="xb" javaType="java.lang.String" jdbcType="CHAR"/>
+		<result property="sftz" column="sftz" javaType="java.lang.String" jdbcType="CHAR"/>
+	</resultMap>
+	
+	<select id ="getSearchList" parameterType= "java.util.HashMap" statementType="CALLABLE" >  
+	      <!--注明statementType="CALLABLE"表示调用存储过程-->  
+	       <![CDATA[
+	           {CALL PKG_ZZJG_MANAGE.PROC_GET_DWBMJS(
+	           									 #{dwbm,mode=IN,jdbcType=VARCHAR},
+	              								#{p_cursor, mode=OUT, jdbcType=CURSOR, resultMap=getSearchListMap},
+	     											#{p_errmsg, mode=OUT,jdbcType=VARCHAR}
+	           )}    
+	       ]]>
+	    
+	</select > 
+	<select id ="dwinfo" parameterType= "java.util.HashMap" statementType="CALLABLE" >  
+	      <!--注明statementType="CALLABLE"表示调用存储过程-->  
+	       <![CDATA[
+	           {CALL PKG_ZZJG_MANAGE.proc_get_dwinfo(
+	           									 #{dwbm,mode=IN,jdbcType=VARCHAR},
+	              								#{p_cursor, mode=OUT, jdbcType=CURSOR, resultMap=getSearchListMap},
+	     											#{p_errmsg, mode=OUT,jdbcType=VARCHAR}
+	           )}    
+	       ]]>
+	    
+	</select > 
+	<select id ="bminfo" parameterType= "java.util.HashMap" statementType="CALLABLE" >  
+	      <!--注明statementType="CALLABLE"表示调用存储过程-->  
+	       <![CDATA[
+	           {CALL PKG_ZZJG_MANAGE.proc_get_bminfo(
+	           									 #{dwbm,mode=IN,jdbcType=CHAR},
+	           									 #{bmbm,mode=IN,jdbcType=CHAR},
+	              								#{p_cursor, mode=OUT, jdbcType=CURSOR, resultMap=bminfoMap},
+	     											#{p_errmsg, mode=OUT,jdbcType=VARCHAR}
+	           )}    
+	       ]]>
+	    
+	</select > 
+	<select id ="wfpGndyByJs" parameterType= "java.util.HashMap" resultMap="wfpGndyByJsMap" >  
+<!-- 	   select t.gnbm, t.gnmc,t.gnsm,t.gnct,t.gnxsmc ,t.flbm from xt_qx_gndy t where t.sfsc='N' -->
+<!--         minus -->
+     <![CDATA[    
+  select x.gnbm,x.gnmc,x.gnsm,x.gnct,x.gnxsmc,x.flbm gnfl from xt_qx_gndy x where x.sfsc='N' and  x.gnbm not in 
+  		(
+          SELECT DISTINCT dy.gnbm
+                      FROM xt_qx_gndy dy
+                     JOIN xt_qx_jsgnfp fp
+                      on fp.GNBM = dy.gnbm
+                      WHERE  1=1 
+                       ]]> 
+                        <if test="dwbm != null and '' != dwbm">  
+	            <![CDATA[  
+	               AND fp.dwbm=#{dwbm}  
+	             ]]>   
+	            </if>
+	      		 <if test="jsbm != null and '' != jsbm">  
+	            <![CDATA[  
+	               AND fp.jsbm=#{jsbm}   
+	             ]]>  
+	            </if>
+	      		 <if test="bmbm != null and '' != bmbm">  
+	            <![CDATA[  
+	              AND fp.bmbm=#{bmbm}  
+	            ]]>  
+	            </if>
+            )
+        union
+  select fl.flbm gnbm, fl.flmc gnmc,'' gnsm,'' gnct  ,'' gnxsmc,fl.fflbm gnfl from xt_qx_gnfl fl where fl.sfsc='N'
+	</select > 
+	<select id ="yfpGndyByJs" parameterType= "java.util.HashMap" resultMap="wfpGndyByJsMap" >  
+				<![CDATA[
+				SELECT dy.gnmc,dy.gnsm,dy.gnct,dy.gnxh,fp.gncs,dy.gnxsmc,dy.gnbm,dy.flbm gnfl
+	                  FROM xt_qx_gndy dy
+	                 JOIN xt_qx_jsgnfp fp
+	                  on fp.GNBM = dy.gnbm
+	                  WHERE  1=1 
+	                    ]]> 
+	      		  <if test="dwbm != null and '' != dwbm">  
+	            <![CDATA[  
+	               AND fp.dwbm=#{dwbm}  
+	             ]]>   
+	            </if>
+	      		 <if test="jsbm != null and '' != jsbm">  
+	            <![CDATA[  
+	               AND fp.jsbm=#{jsbm}   
+	             ]]>  
+	            </if>
+	      		 <if test="bmbm != null and '' != bmbm">  
+	            <![CDATA[  
+	              AND fp.bmbm=#{bmbm}  
+	            ]]>  
+	            </if>
+	</select>
+	<select id ="ajlbqx" parameterType= "java.util.HashMap" resultMap="ajlbqxMap" >  
+		<if test="sffp != null and '' != sffp">  
+		<![CDATA[
+	select t2.ajlbbm,t2.ajlbmc from xt_dm_ajlbbm t2
+		minus
+		]]> 
+		 </if>
+		<![CDATA[
+	select t.qxbm as ajlbbm ,t.qxmc as ajlbmc from XT_DM_QX t join xt_dm_ajlbbm t3 on t.qxbm=t3.ajlbbm  
+		where t.qxlx='1'
+		]]> 
+			<if test="dwbm != null and '' != dwbm">  
+	            <![CDATA[  
+	               AND t.dwbm=#{dwbm}  
+	             ]]>   
+	            </if>
+	      		 <if test="jsbm != null and '' != jsbm">  
+	            <![CDATA[  
+	               AND t.jsbm=#{jsbm}   
+	             ]]>  
+	            </if>
+	      		 <if test="bmbm != null and '' != bmbm">  
+	            <![CDATA[  
+	              AND t.bmbm=#{bmbm}  
+	            ]]>  
+	            </if>
+	</select>
+	<select id ="dwqx" parameterType= "java.util.HashMap" resultMap="dwqxMap" > 
+	
+	<![CDATA[ 
+	select t2.*　from xt_zzjg_dwbm t2 where t2.dwbm
+	]]>
+	   in
+	 <![CDATA[ 
+	 (
+	select t.qxbm from XT_DM_QX t where t.qxlx='0' and 
+    t.dwbm=#{dwbm}   AND t.jsbm=#{jsbm}    AND t.bmbm=#{bmbm}    )
+	 ]]> 
+	</select> 
+	<select id ="ryBydwjsbm" parameterType= "java.util.HashMap" resultMap="ryBydwjsbmMap" > 
+	
+	<![CDATA[ 
+	select t2.mc ,t2.dlbm,t2.gzzh,t2.gh,t2.xb,t2.yddhhm ,t2.sftz,t2.dwbm from XT_ZZJG_RYBM t2 
+         where 1=1
+	               AND t2.dwbm=#{dwbm}  and t2.sfsc='N'
+         and t2.gh in
+	(select t.gh from XT_QX_RYJSFP t where 1=1
+	               AND t.dwbm=#{dwbm}  
+	             ]]>   
+	      		 <if test="jsbm != null and '' != jsbm">  
+	            <![CDATA[  
+	               AND t.jsbm=#{jsbm}   
+	             ]]>  
+	            </if>
+	      		 <if test="bmbm != null and '' != bmbm">  
+	            <![CDATA[  
+	              AND t.bmbm=#{bmbm}  
+	            ]]>  
+	            </if> 
+	            <![CDATA[  
+	              )
+	            ]]>  
+	 
+	</select> 
+	<select id ="ryBydwjsbm1" parameterType= "java.util.HashMap" resultMap="ryBydwjsbmMap" > 
+	
+	<![CDATA[ 
+	select t2.mc ,t2.dlbm,t2.gzzh,t2.gh,t2.xb,t2.yddhhm ,t2.sftz,t2.dwbm from XT_ZZJG_RYBM t2 
+         where 1=1
+	               AND t2.dwbm=#{dwbm}  and t2.sfsc='N' and t2.gzzh='427'
+        
+	            ]]>  
+	 
+	</select> 
+	<select id ="ryjsBydwjsbm" parameterType= "java.util.HashMap" resultMap="ryBydwjsbmMap" >
+	select t.mc,t.dlbm,t.gzzh,t.gh,t.xb,t.yddhhm from XT_ZZJG_RYBM t 
+		where t.dwbm=#{dwbm} and t.sfsc='N'  
+	and t.gh not in 
+		(select t2.gh from  XT_QX_RYJSFP t2 where   t2.dwbm=#{dwbm} )
+	
+	
+	 </select>
+	<select id ="queryQxByDwBmJs" parameterType= "java.util.HashMap" resultMap="queryQxByDwBmJsMap" >
+		select qxbm, jsbm,  qxlx,  qxmc,  dwbm, bmbm 
+			from XT_DM_QX t where t.qxbm=#{ajlbbm} and t.dwbm=#{dwbm} and t.bmbm=#{bmbm} and t.jsbm=#{jsbm} and t.qxlx=0
+	
+	</select>
+	 
+	
+	<insert id="add_jsgnqx" parameterType= "java.util.HashMap" statementType="CALLABLE" >
+	 <![CDATA[
+	           {CALL PKG_ZZJG_MANAGE.proc_add_jsgnqx(
+	           									 #{dwbm,mode=IN,jdbcType=CHAR},
+	           									 #{bmbm,mode=IN,jdbcType=CHAR},
+	           									 #{jsbm,mode=IN,jdbcType=CHAR},
+	           									 #{gnbm,mode=IN,jdbcType=CHAR},
+	           									 #{bz,mode=IN,jdbcType=VARCHAR},
+	    										#{p_errmsg, mode=OUT,jdbcType=VARCHAR}
+	           )}    
+	       ]]>
+	
+	</insert>
+	<insert id="add_bminfo" parameterType= "java.util.HashMap" statementType="CALLABLE" >
+	<![CDATA[
+			{CALL PKG_ZZJG_MANAGE.PROC_ADD_BMINFO(
+						#{dwbm,mode=IN ,jdbcType=CHAR},
+						#{bmbm,mode=IN ,jdbcType=CHAR},
+						#{bmmc,mode=IN ,jdbcType=VARCHAR},
+						#{bmjc,mode=IN ,jdbcType=VARCHAR},
+						#{bmxh,mode=IN ,jdbcType=INTEGER},
+						#{bz,mode=IN ,jdbcType=VARCHAR},
+						#{fbmbm,mode=IN ,jdbcType=CHAR},
+						#{p_errmsg, mode=OUT,jdbcType=VARCHAR}
+			)}
+	]]>
+	</insert>
+	<insert id="add_jsinfo" parameterType= "java.util.HashMap" statementType="CALLABLE" >
+	<![CDATA[
+			{CALL PKG_ZZJG_MANAGE.proc_add_jsinfo(
+						#{dwbm,mode=IN ,jdbcType=CHAR},
+						#{bmbm,mode=IN ,jdbcType=CHAR},
+						#{jsbm,mode=IN ,jdbcType=VARCHAR},
+						#{jsmc,mode=IN ,jdbcType=VARCHAR},
+						#{jsxh,mode=IN ,jdbcType=INTEGER},
+						#{spjsbm,mode=IN ,jdbcType=VARCHAR},
+						#{p_errmsg, mode=OUT,jdbcType=VARCHAR}
+			)}
+	]]>
+	</insert>
+	
+	<insert id="add_ajlbqx" parameterType= "java.util.HashMap"  >
+		<![CDATA[
+			insert into XT_DM_QX
+				(dwbm,bmbm,jsbm,qxbm,qxmc,qxlx) 
+			values
+				(#{dwbm,jdbcType=CHAR},
+				 #{bmbm,jdbcType=CHAR},
+				 #{jsbm,jdbcType=VARCHAR},
+				 #{ajlbbm,jdbcType=VARCHAR}, 
+				 #{ajlbmc,jdbcType=VARCHAR},
+				 '1')
+	]]>
+	
+	</insert>
+	<insert id="add_ryqx" parameterType= "java.util.HashMap"  >
+		<![CDATA[
+			insert into XT_QX_RYJSFP
+				(dwbm,bmbm,jsbm,gh) 
+			values
+				(#{dwbm,jdbcType=CHAR},
+				 #{bmbm,jdbcType=CHAR},
+				 #{jsbm,jdbcType=CHAR},
+				 #{gh,jdbcType=CHAR}
+				)
+	]]>
+	
+	</insert>
+	<insert id="add_dwqx" parameterType= "java.util.HashMap"  >
+		<![CDATA[
+			insert into XT_DM_QX
+				(dwbm,bmbm,jsbm,qxbm,qxmc,qxlx) 
+			values
+				(#{dwbm,jdbcType=CHAR},
+				 #{bmbm,jdbcType=CHAR},
+				 #{jsbm,jdbcType=VARCHAR},
+				 #{ajlbbm,jdbcType=VARCHAR}, 
+				 #{ajlbmc,jdbcType=VARCHAR},
+				 '0')
+	]]>
+	
+	</insert>
+
+	<update id="update" parameterType="com.dzjz.xtpz.qx.po.Js">
+			update xt_qx_jsbm t  set t.jsmc=#{jsmc},t.jsxh=#{jsxh} where t.dwbm=#{dwbm}   and t.bmbm=#{bmbm}   AND t.jsbm=#{jsbm}  
+	</update>
+	<delete id="delete" parameterType= "java.util.HashMap" statementType="CALLABLE">
+	
+	{CALL PKG_ZZJG_MANAGE.proc_delete_jsinfo(
+					#{dwbm,mode=IN ,jdbcType=CHAR},
+					#{bmbm,mode=IN ,jdbcType=CHAR},
+					#{jsbm,mode=IN ,jdbcType=VARCHAR},
+					#{p_errmsg, mode=OUT,jdbcType=VARCHAR}
+		)}
+	
+	</delete>
+	<delete id="delete_jsgnqx" parameterType= "java.util.HashMap" statementType="CALLABLE">
+	
+	{CALL PKG_ZZJG_MANAGE.proc_delete_jsgnqx(
+					#{dwbm,mode=IN ,jdbcType=CHAR},
+					#{jsbm,mode=IN ,jdbcType=VARCHAR},
+					#{gnbm,mode=IN ,jdbcType=CHAR},
+					#{p_errmsg, mode=OUT,jdbcType=VARCHAR}
+		)}
+	
+	</delete>
+	<delete id="delete_ajlbqx" parameterType= "java.util.HashMap">
+			delete  from XT_DM_QX t where t.dwbm=#{dwbm}   and t.bmbm=#{bmbm}   AND t.jsbm=#{jsbm} and t.qxbm=#{ajlbbm} and t.qxlx='1'
+	
+	</delete>
+	<delete id="delete_dwqx" parameterType= "java.util.HashMap">
+			delete  from XT_DM_QX t where t.dwbm=#{dwbm}   and t.bmbm=#{bmbm}   AND t.jsbm=#{jsbm} and t.qxbm=#{ajlbbm} and t.qxlx='0'
+	
+	</delete>
+	
+	<delete id="delete_ryqx" parameterType= "java.util.HashMap">
+			delete  from XT_QX_RYJSFP t where t.dwbm=#{dwbm}   and t.bmbm=#{bmbm}   AND t.jsbm=#{jsbm} and t.gh=#{gh} 
+	
+	</delete>
+	
+</mapper>

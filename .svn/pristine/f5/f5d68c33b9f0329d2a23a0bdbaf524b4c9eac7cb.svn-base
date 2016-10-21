@@ -1,0 +1,24 @@
+/**
+ * 
+ */
+package com.dzjz.xtpz.qx.service;
+
+import java.util.Collection;
+import java.util.Map;
+
+/**
+ * @author Administrator
+ *
+ */
+public interface RyQxService {
+		//通过单位编码获取人员功能权限
+		public Collection queryByMap(Map<String, ?> map);
+		//用于加载左边功能定义分类树型结构
+		public Collection gndyfl(Map<String, ?> map);
+		//通过功能编码查询未分配人员
+		public Collection rygnBygnbm(Map<String, ?> map);
+		//删除人员功能权限
+		public void delete_rygnqx(Map<String, ?> map);
+		//添加人员功能权限
+		public void add_rygnqx(Map<String, ?> map);
+}

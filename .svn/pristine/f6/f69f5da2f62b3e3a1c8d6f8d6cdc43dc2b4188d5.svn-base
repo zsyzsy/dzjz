@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dzjz.jzyj.dao.LsajyjDao">
+	<resultMap id="ajyjMap" type ="java.util.HashMap">
+		<result property="ro" column="ro" />
+		<result property="gh" column="gh" />
+		<result property="dwbm" column="dwbm" />
+		<result property="mc" column="mc" />
+		<result property="bmsah" column="bmsah" />
+		<result property="yjxh" column="yjxh" />
+		<result property="ajmc" column="ajmc" />
+		<result property="ajlbbm" column="ajlbbm" />
+		<result property="ajlbmc" column="ajlbmc" />
+		<result property="yjkssj" column="yjkssj" />
+		<result property="yjjssj" column="yjjssj" />
+		<result property="yjzh" column="yjzh" />
+		<result property="yjmm" column="yjmm" />
+		<result property="jdsj" column="jdsj" />
+		<result property="jdr" column="jdr" />
+		<result property="jdrgh" column="jdrgh" />
+		<result property="jdbmbm" column="jdbmbm" />
+		<result property="jdbmmc" column="jdbmmc" />
+		<result property="jddwbm" column="jddwbm" />
+		<result property="jddwmc" column="jddwmc" />
+		<result property="sfsc" column="sfsc" />
+		<result property="yjsqdh" column="yjsqdh" />
+		<result property="jzztxs" column="jzztxs" />
+	</resultMap>
+	<resultMap id="leftTreeyjMap" type ="java.util.HashMap">
+		<result property="isleaf" column="isleaf" />
+		<result property="mlbh" column="mlbh" />
+		<result property="fmlbh" column="fmlbh" />
+		<result property="mlxsmc" column="mlxsmc" />
+		<result property="mllx" column="mllx" />
+		<result property="mlsxh" column="mlsxh" />
+		<result property="sfsm" column="sfsm" />
+		<result property="wjmc" column="wjmc" />
+		<result property="wjlj" column="wjlj" />
+		<result property="isexist" column="isexist" />
+	</resultMap>
+	<!-- 查询案件列表绑定-->
+	<select id="queryListyj" resultMap="ajyjMap" >
+	<![CDATA[  
+	SELECT * FROM (  SELECT ROW_NUMBER() OVER (order by T.YJJSSJ desc,JDSJ desc)AS Ro, T.*  from YX_DZJZ_LSAJBD T 
+ 		WHERE 1=1  and SFSC='N' and GH=#{gh} and DWBM=#{dwbm} ) TT 
+			]]>
+	</select>
+	<!-- 查询案件详情树型-->
+	<select id="queryListleftTreeyj" resultMap="leftTreeyjMap" >
+	<![CDATA[  
+
+	select distinct CONNECT_BY_ISLEAF ISLEAF,MLBH,FMLBH,MLXSMC,MLLX,MLSXH,SFSM,WJMC,WJLJ, ISEXIST  from
+	   ( select MLBH,FMLBH,MLXSMC,MLLX,MLSXH,SFSM,'' WJMC,'' WJLJ,NULL ISEXIST  from YX_DZJZ_JZML  
+	 		where 1=1  and SFSC='N' and BMSAH=#{bmsah}  
+	 		and mlbh in (select wjxh from YX_DZJZ_LSAJWJFP t where t.yjxh=#{yjxh}  )
+	 union all  
+	 	select WJXH MLBH,MLBH FMLBH,WJXSMC,'4',WJSXH,'' SFSM,WJMC,WJLJ ,NULL from 
+	 	YX_DZJZ_JZMLWJ  where 1=1  and SFSC='N' and BMSAH=#{bmsah} and wjxh in (select wjxh from YX_DZJZ_LSAJWJFP t where t.yjxh=#{yjxh}  )
+	 	group by WJXH ,MLBH ,WJXSMC,WJSXH,WJMC,WJLJ  ) T 
+	  	where 1=1  and level < 3 start with 1=1  and FMLBH is null connect by  FMLBH= prior MLBH  order by mlsxh 
+			]]>
+	</select>
+	
+</mapper>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dzjz.xtpz.cspz.dao.CspzDao">
+
+	<resultMap id="cspzMap" type="com.dzjz.xtpz.cspz.po.Cspz">
+		<id property="pzbm" column="pzbm" />
+		<result property="systemmark" column="systemmark" />
+		<result property="configid" column="configid" />
+		<result property="configname" column="configname" />
+		<result property="configvalue" column="configvalue" />
+	</resultMap>
+	<!-- 查询所有部门 -->
+	<select id="findAll" resultMap="cspzMap" >
+		SELECT t.*,  FROM XY_DZJZ_XTPZ t 
+  
+	</select>
+	<!--通过条件查询部门信息 -->
+	<select id="queryByMap" resultMap="cspzMap" >
+	<![CDATA[  
+		     SELECT t.* FROM XY_DZJZ_XTPZ t  where 1=1
+			]]>
+			<if test="pzbm!= null and '' != pzbm">  
+            <![CDATA[  
+              AND t.pzbm=#{pzbm}  
+            ]]> 
+            </if> 
+	</select>
+	<!--通过条件查询部门信息 -->
+	<select id="queryByMapByMc" resultMap="cspzMap" >
+	<![CDATA[  
+		     SELECT t.* FROM XY_DZJZ_XTPZ t  where 1=1
+			]]>
+              AND t.configname=#{configname}  
+	</select>
+	<insert id="add" parameterType="com.dzjz.xtpz.cspz.po.Cspz">
+	 <selectKey keyProperty="pzbm" resultType="String" order="BEFORE">
+
+        select sys_guid() from dual
+
+    </selectKey>
+		INSERT INTO XY_DZJZ_XTPZ(
+			pzbm, 
+			systemmark, 
+			configid, 
+			configname, 
+			configvalue
+			)
+		VALUES (
+			#{pzbm,jdbcType=VARCHAR},
+			#{systemmark,jdbcType=VARCHAR},
+			#{configid,jdbcType=INTEGER},
+			#{configname,jdbcType=VARCHAR},
+			#{configvalue,jdbcType=VARCHAR}
+			)
+	</insert> 
+		<!-- 删除 -->
+	<delete id="delete" parameterType="com.dzjz.xtpz.cspz.po.Cspz">
+			delete XY_DZJZ_XTPZ  t where t.pzbm=#{pzbm} 
+	</delete>
+		<!-- 修改 -->
+	<update id="update" parameterType="com.dzjz.xtpz.cspz.po.Cspz">
+			update XY_DZJZ_XTPZ t  set t.configname=#{configname},t.configvalue=#{configvalue} where t.pzbm=#{pzbm} 
+	</update>
+
+		<!-- 查询单位最大值 --><!-- sql可优化 -->
+	<select id="maxId" resultMap="cspzMap">
+		select t1.* from XT_ZZJG_BMBM  t1 
+			where t1.dwbm=#{param} and t1.bmbm= (
+				SELECT max(t.bmbm) FROM XT_ZZJG_BMBM  t where t.dwbm=#{param}
+				)
+	</select>
+</mapper>

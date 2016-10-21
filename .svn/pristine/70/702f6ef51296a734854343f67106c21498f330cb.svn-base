@@ -1,0 +1,115 @@
+/**
+ * 
+ */
+package com.dzjz.xtpz.gnfl.service.impl;
+
+import java.util.Collection;
+import java.util.List;
+
+import com.dzjz.xtpz.gnfl.dao.GnflDao;
+import com.dzjz.xtpz.gnfl.po.Gnfl;
+import com.dzjz.xtpz.gnfl.service.GnflService;
+
+/**
+ * @author change
+ *
+ */
+public class GnflServiceImpl implements GnflService{
+	private GnflDao gnflDao;
+	
+	/**
+	 * @return the gnflDao
+	 */
+	public GnflDao getGnflDao() {
+		return gnflDao;
+	}
+
+	/**
+	 * @param gnflDao the gnflDao to set
+	 */
+	public void setGnflDao(GnflDao gnflDao) {
+		this.gnflDao = gnflDao;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.common.CommInterface#findAll()
+	 */
+	@Override
+	public Collection<Gnfl> findAll() {
+		// TODO Auto-generated method stub
+		return gnflDao.findAll();
+	}
+
+	/* (non-Javadoc)
+	 * @see com.common.CommInterface#findAllByMap(java.lang.Object)
+	 */
+	@Override
+	public Gnfl findAllByMap(Gnfl t) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.common.CommInterface#add(java.lang.Object)
+	 */
+	@Override
+	public void add(Gnfl t) {
+		// TODO Auto-generated method stub
+		t.setSfsc("N");
+		t.setDwbm("370000");
+		gnflDao.add(t);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.common.CommInterface#delete(java.lang.Object)
+	 */
+	@Override
+	public void delete(Gnfl t) {
+		// TODO Auto-generated method stub
+		t.setSfsc("Y");
+		gnflDao.delete(t);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.common.CommInterface#update(java.lang.Object)
+	 */
+	@Override
+	public void update(Gnfl t) {
+		// TODO Auto-generated method stub
+		gnflDao.update(t);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.common.CommInterface#queryByMap(java.lang.Object)
+	 */
+	@Override
+	public Collection<Gnfl> queryByMap(Gnfl t) {
+		// TODO Auto-generated method stub
+		return gnflDao.queryByMap(t);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.common.CommInterface#newId(java.lang.String)
+	 */
+	@Override
+	public String newId(String param) {
+		// TODO Auto-generated method stub
+		List<Gnfl > list=(List<Gnfl>) maxId(param);
+		String newId1=list.get(0).getFlbm();
+		//将字符串转为数字+1生成最新唯一id
+		Long newId2= (Long.parseLong(newId1)+1);
+		//将最新id转换成字符串
+		String newId=""+newId2;
+		return newId;
+	}
+
+	/* (non-Javadoc)
+	 * @see com.common.CommInterface#maxId(java.lang.String)
+	 */
+	@Override
+	public Collection<Gnfl> maxId(String param) {
+		// TODO Auto-generated method stub
+		return gnflDao.maxId(param);
+	}
+
+}

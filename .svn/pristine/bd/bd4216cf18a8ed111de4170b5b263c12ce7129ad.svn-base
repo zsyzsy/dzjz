@@ -1,0 +1,107 @@
+/**
+ * 
+ */
+package com.dzjz.xtpz.sbxx.action;
+
+import java.util.List;
+
+import com.common.JsonListResult;
+import com.common.ListToJson;
+import com.dzjz.xtpz.sbxx.po.Sbxx;
+import com.dzjz.xtpz.sbxx.service.SbxxService;
+
+/**
+ * @author Administrator
+ *
+ */
+public class SbxxAction {
+	private SbxxService sbxxService;
+	
+	private Sbxx sbxx;
+	
+	private List<Sbxx> sbxxs;
+	
+	private JsonListResult jsonListResult;
+	
+	public String input(){
+		
+		return "input";
+	}
+	
+	public  String queryList(){
+		
+		sbxxs=(List<Sbxx>) sbxxService.findAll();
+		
+		jsonListResult=new JsonListResult(sbxxs);
+		ListToJson listToJson=new ListToJson();
+		return "queryList";
+	}
+
+
+	/**
+	 * @return the sbxxService
+	 */
+	public SbxxService getSbxxService() {
+		return sbxxService;
+	}
+
+
+	/**
+	 * @param sbxxService the sbxxService to set
+	 */
+	public void setSbxxService(SbxxService sbxxService) {
+		this.sbxxService = sbxxService;
+	}
+
+
+	/**
+	 * @return the sbxx
+	 */
+	public Sbxx getSbxx() {
+		return sbxx;
+	}
+
+
+	/**
+	 * @param sbxx the sbxx to set
+	 */
+	public void setSbxx(Sbxx sbxx) {
+		this.sbxx = sbxx;
+	}
+
+
+	/**
+	 * @return the sbxxs
+	 */
+	public List<Sbxx> getSbxxs() {
+		return sbxxs;
+	}
+
+
+	/**
+	 * @param sbxxs the sbxxs to set
+	 */
+	public void setSbxxs(List<Sbxx> sbxxs) {
+		this.sbxxs = sbxxs;
+	}
+
+
+	/**
+	 * @return the jsonListResult
+	 */
+	public JsonListResult getJsonListResult() {
+		return jsonListResult;
+	}
+
+
+	/**
+	 * @param jsonListResult the jsonListResult to set
+	 */
+	public void setJsonListResult(JsonListResult jsonListResult) {
+		this.jsonListResult = jsonListResult;
+	}
+	
+
+	
+
+}

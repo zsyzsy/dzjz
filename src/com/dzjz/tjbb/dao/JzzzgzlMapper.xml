@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dzjz.tjbb.dao.JzzzgzltjDao">
+
+		<!--配置返回游标中别名对应的resultMap -->  
+	<resultMap type ="java.util.HashMap" id= "getcasebypersonMap">
+     <result column ="RO" property="RO" javaType="java.lang.Integer" jdbcType="INTEGER" />  
+     <result column ="jzscrxm" property="jzscrxm" javaType="java.lang.String" jdbcType="VARCHAR"/>  
+     <result column ="cbdw_bm" property="cbdw_bm" javaType="java.lang.String" jdbcType="VARCHAR"/>  
+     <result column ="cbdw_mc" property="cbdw_mc" javaType="java.lang.String" jdbcType="VARCHAR"/>  
+     <result column ="ajcount" property="ajcount" javaType="java.lang.Integer" jdbcType="INTEGER" />  
+     <result column ="jcount" property="jcount" javaType="java.lang.Integer" jdbcType="INTEGER"/>  
+     <result column ="mcount" property="mcount" javaType="java.lang.Integer" jdbcType="INTEGER"/>  
+     <result column ="wcount" property="wcount" javaType="java.lang.Integer" jdbcType="INTEGER"/>  
+     <result column ="pagecount" property="pagecount" javaType="java.lang.Integer" jdbcType="INTEGER"/>  
+	</resultMap >  
+	<resultMap type ="java.util.HashMap" id= "getcasebypersonbMap">
+     <result column ="jzscrxm" property="jzscrxm" javaType="java.lang.String" jdbcType="VARCHAR" />  
+     <result column ="cbdw_mc" property="cbdw_mc" javaType="java.lang.String" jdbcType="VARCHAR"/>  
+     <result column ="ajcount" property="ajcount" javaType="java.lang.Integer" jdbcType="INTEGER"/>  
+     <result column ="jcount" property="jcount" javaType="java.lang.Integer" jdbcType="INTEGER"/>  
+     <result column ="wcount" property="wcount" javaType="java.lang.Integer" jdbcType="INTEGER"/>  
+     <result column ="pagecount" property="pagecount" javaType="java.lang.Integer" jdbcType="INTEGER"/>  
+     <result column ="ywmc" property="ywmc" javaType="java.lang.String" jdbcType="VARCHAR"/>  
+	</resultMap >  
+<!-- 单位卷宗制作情况统计 -->
+	<select id ="getcasebyperson" parameterType= "java.util.HashMap" statementType="CALLABLE" >  
+	      <!--注明statementType="CALLABLE"表示调用存储过程-->  
+	       <![CDATA[
+	            {CALL pkg_dzjz_report.proc_report_getcasebyperson(
+	           									#{get_where,mode=IN,jdbcType=VARCHAR},
+	           									#{get_rwhere,mode=IN,jdbcType=VARCHAR},
+	           									'cbdw_bm',
+	              								'1',
+	           									'10000',
+	           									#{p_count, mode=OUT, jdbcType=INTEGER},
+	              								#{p_cursor, mode=OUT, jdbcType=CURSOR, resultMap=getcasebypersonMap},
+	     										#{p_errmsg, mode=OUT,jdbcType=VARCHAR}
+	           )}    
+	       ]]>
+	    
+	</select > 
+<!-- 	卷宗制作工作量详情统计 -->
+	<select id ="getcasebypersonb" parameterType= "java.util.HashMap" statementType="CALLABLE" >  
+	       <![CDATA[
+	           {CALL pkg_dzjz_report.proc_report_getcasebypersonb( 
+ 	           									#{get_where,mode=IN,jdbcType=VARCHAR},
+ 	           									#{get_rwhere,mode=IN,jdbcType=VARCHAR},
+	           									'ywbm',
+	              								'1',
+	           									'10000',
+	           									#{p_count, mode=OUT, jdbcType=INTEGER},
+	              								#{p_cursor, mode=OUT, jdbcType=CURSOR, resultMap=getcasebypersonbMap},
+	     										#{p_errmsg, mode=OUT,jdbcType=VARCHAR}
+ 	           )}    
+	       ]]>
+	    
+	</select > 
+	
+</mapper>

@@ -1,0 +1,47 @@
+/**
+ * 
+ */
+package com.dzjz.xtpz.login.service.impl;
+
+import java.util.Map;
+
+import com.dzjz.xtpz.login.dao.LoginDao;
+import com.dzjz.xtpz.login.service.LoginService;
+
+/**
+ * @author Administrator
+ *
+ */
+public class LoginServiceImpl implements LoginService{
+	private LoginDao loginDao;
+
+	
+	/**
+	 * @return the loginDao
+	 */
+	public LoginDao getLoginDao() {
+		return loginDao;
+	}
+
+	/**
+	 * @param loginDao the loginDao to set
+	 */
+	public void setLoginDao(LoginDao loginDao) {
+		this.loginDao = loginDao;
+	}
+
+
+	
+	/* (non-Javadoc)
+	 * @see com.dzjz.xtpz.login.service.LoginService#updateMm(com.dzjz.xtpz.qx.po.Yh)
+	 */
+	@Override
+	public void updateMm(Map<String, ?> map) {
+		// TODO Auto-generated method stub
+		System.out.println("");
+		loginDao.updateMm(map);
+	}
+
+
+
+}

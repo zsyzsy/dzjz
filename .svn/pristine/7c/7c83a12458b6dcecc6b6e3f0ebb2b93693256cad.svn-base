@@ -1,0 +1,15 @@
+/**
+ * 
+ */
+package com.dzjz.xtpz.cspz.dao;
+
+import com.common.CommInterface;
+import com.dzjz.xtpz.cspz.po.Cspz;
+
+/**
+ * @author change
+ *
+ */
+public interface CspzDao extends CommInterface<Cspz>{
+
+}

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dzjz.xtpz.gndy.dao.GndyDao">
+	<resultMap id="gndyMap" type="com.dzjz.xtpz.gndy.po.Gndy">
+		<id property="gnbm" column="gnbm" />
+		<result property="gnmc" column="gnmc" />
+		<result property="flbm" column="flbm" />
+		<result property="gncxj" column="gncxj" />
+		<result property="gnct" column="gnct" />
+		<result property="gnsm" column="gnsm" />
+		<result property="gnxh" column="gnxh" />
+		<result property="gnxsmc" column="gnxsmc" />
+		<result property="cscs" column="cscs" />
+		<result property="gncs" column="gncs" />
+		<result property="sfmtck" column="sfmtck" />
+		<result property="sfsc" column="sfsc" />
+		<result property="sfsysy" column="sfsysy" />
+		<result property="sfsjysy" column="sfsjysy" />
+		<result property="sfgjysy" column="sfgjysy" />
+		<result property="sfqysy" column="sfqysy" />
+		<result property="sfdjy" column="sfdjy" />
+		<association property="dwbm" column="dwbm" javaType="com.dzjz.xtpz.dw.po.Dw">
+			<id property="dwbm" column="dwbm"/>
+			<result property="dwmc" column="dwmc" />
+			<result property="fdwbm" column="fdwbm" />
+			<result property="dwjb" column="dwjb" />
+			<result property="sfsc" column="sfsc" />
+			<result property="dwjc" column="dwjc" />
+			<result property="dwsx" column="dwsx" />
+		</association>
+	</resultMap>
+	
+	<!-- 查询所有部门 -->
+	<select id="findAll" resultMap="gndyMap" >
+		SELECT t.* FROM XT_QX_GNdy t 
+   			where  t.sfsc='N' 
+	</select>
+	<!-- 查询单位最大值 -->
+	<select id="maxId" resultMap="gndyMap" >
+		select t1.gnbm from XT_QX_GNDY  t1 
+			where t1.gnbm= (
+				SELECT max(t.gnbm) FROM XT_QX_GNDY  t where 1=1
+				)
+	</select>
+	<!-- 查询符合条件的数据 --><!-- 数据少暂不单独写 -->
+	<select id="queryByMap" resultMap="gndyMap" >
+	<![CDATA[  
+		select t1.* from XT_QX_GNDY  t1 where t1.sfsc='N'
+			]]>
+			
+			<if test="gnbm != null and '' != gnbm">  
+            <![CDATA[  
+              AND t1.gnbm=#{gnbm}  
+            ]]>  
+            </if>
+	</select>
+	<update id="update" parameterType="com.dzjz.xtpz.gndy.po.Gndy">
+			update XT_QX_GNDY t 
+				set t.gnmc=#{gnmc} ,t.gnxh=#{gnxh},t.gnct=#{gnct},t.gnsm=#{gnsm} 
+				where  t.gnbm=#{gnbm}
+	</update>
+	<update id="delete" parameterType="com.dzjz.xtpz.gndy.po.Gndy">
+			update XT_QX_GNDY t set t.sfsc=#{sfsc}  where  t.gnbm=#{gnbm}
+	</update>
+	<insert id="add" parameterType="com.dzjz.xtpz.gndy.po.Gndy">
+		INSERT INTO XT_QX_GNDY(
+			gnbm, 
+			gnmc, 
+			flbm, 
+			gncxj, 
+			gnct, 
+			gnsm, 
+			gnxh, 
+			gnxsmc, 
+			cscs, 
+<!-- 			gncs,  -->
+			dwbm, 
+			sfmtck, 
+			sfsc, 
+			sfsysy, 
+			sfsjysy, 
+			sfgjysy, 
+			sfqysy, 
+			sfdjy
+			)
+		VALUES (
+			#{gnbm,jdbcType=CHAR},
+			#{gnmc,jdbcType=VARCHAR},
+			#{flbm,jdbcType=CHAR},
+			#{gncxj,jdbcType=VARCHAR},
+			#{gnct,jdbcType=VARCHAR},
+			#{gnsm,jdbcType=VARCHAR},
+			#{gnxh,jdbcType=INTEGER},
+			#{gnxsmc,jdbcType=VARCHAR},
+			#{cscs,jdbcType=VARCHAR},
+<!-- 			#{gncs,jdbcType=CLOB}, -->
+			#{dwbm.dwbm,jdbcType=CHAR},
+			#{sfmtck,jdbcType=CHAR},
+			#{sfsc,jdbcType=CHAR},
+			#{sfsysy,jdbcType=CHAR},
+			#{sfsjysy,jdbcType=CHAR},
+			#{sfgjysy,jdbcType=CHAR},
+			#{sfqysy,jdbcType=CHAR},
+			#{sfdjy,jdbcType=CHAR}
+			)
+	</insert> 
+</mapper>

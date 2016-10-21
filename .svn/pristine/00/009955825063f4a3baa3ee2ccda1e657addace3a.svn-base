@@ -1,0 +1,153 @@
+/**
+ * 
+ */
+package com.dzjz.xtpz.qx.action;
+
+import java.util.List;
+import java.util.Map;
+
+import com.common.JsonListResult;
+import com.dzjz.xtpz.qx.service.RyQxService;
+import com.google.common.collect.Maps;
+
+/**
+ * @author Administrator
+ *
+ */
+public class RyQxAction {
+	
+	private  RyQxService ryQxService;
+	
+	private String dwbm;
+	
+	private String gnbm;
+	
+	private String gh;
+	
+	private JsonListResult jsonListResult;
+	
+	public String input(){
+		
+		return "input";
+	}
+	//查询所有人员功能信息
+	public String queryByMap(){
+		Map< String, Object> map =Maps.newHashMap();
+			map.put("dwbm", dwbm);
+			map.put("gnbm", gnbm);
+		List list=(List) ryQxService.queryByMap(map);
+		jsonListResult=new JsonListResult(list);
+		
+		return "success";
+	}
+	//加载左边树型结构
+	public String gndyfl(){
+		Map< String, Object> map =Maps.newHashMap();
+		List list=(List) ryQxService.gndyfl(map);
+		jsonListResult=new JsonListResult(list);
+		
+		return "success";
+	}
+	//加载左边树型结构
+	public String rygnBygnbm(){
+		Map< String, Object> map =Maps.newHashMap();
+		map.put("dwbm", dwbm);
+		map.put("gnbm", gnbm);
+		List list=(List) ryQxService.rygnBygnbm(map);
+		jsonListResult=new JsonListResult(list);
+		
+		return "success";
+	}
+	//删除人员功能权限
+	public String delete_rygnqx(){
+		Map< String, Object> map =Maps.newHashMap();
+		map.put("dwbm", dwbm);
+		map.put("gnbm", gnbm);
+		map.put("gh",gh);
+		ryQxService.delete_rygnqx(map);
+		
+		return "delete";
+	}
+	//添加人员功能权限
+	public String add_rygnqx(){
+		Map< String, Object> map =Maps.newHashMap();
+		map.put("dwbm", dwbm);
+		map.put("gnbm", gnbm);
+		map.put("gh",gh);
+		ryQxService.add_rygnqx(map);
+		
+		return "add";
+	}
+
+	/**
+	 * @return the ryQxService
+	 */
+	public RyQxService getRyQxService() {
+		return ryQxService;
+	}
+
+	/**
+	 * @param ryQxService the ryQxService to set
+	 */
+	public void setRyQxService(RyQxService ryQxService) {
+		this.ryQxService = ryQxService;
+	}
+
+	/**
+	 * @return the dwbm
+	 */
+	public String getDwbm() {
+		return dwbm;
+	}
+
+	/**
+	 * @param dwbm the dwbm to set
+	 */
+	public void setDwbm(String dwbm) {
+		this.dwbm = dwbm;
+	}
+
+	/**
+	 * @return the gnbm
+	 */
+	public String getGnbm() {
+		return gnbm;
+	}
+
+	/**
+	 * @param gnbm the gnbm to set
+	 */
+	public void setGnbm(String gnbm) {
+		this.gnbm = gnbm;
+	}
+
+	/**
+	 * @return the gh
+	 */
+	public String getGh() {
+		return gh;
+	}
+
+	/**
+	 * @param gh the gh to set
+	 */
+	public void setGh(String gh) {
+		this.gh = gh;
+	}
+
+	/**
+	 * @return the jsonListResult
+	 */
+	public JsonListResult getJsonListResult() {
+		return jsonListResult;
+	}
+
+	/**
+	 * @param jsonListResult the jsonListResult to set
+	 */
+	public void setJsonListResult(JsonListResult jsonListResult) {
+		this.jsonListResult = jsonListResult;
+	}
+	
+
+}

@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http#{//mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.common.dao.AjjbxxDao">
+
+	<resultMap id="ajjbxxMap" type ="java.util.HashMap">
+		<result property="bmsah" column="bmsah" />
+		<result  property="tysah" column="tysah" />
+		<result property="sfsc" column="sfsc" />
+		<result property="cbdw_bm" column="cbdw_bm" />
+		<result property="cbdw_mc" column="cbdw_mc" />
+		<result property="cjsj" column="cjsj" />
+		<result property="zhxgsj" column="zhxgsj" />
+		<result property="slrq" column="slrq" />
+		<result property="ajmc" column="ajmc" />
+		<result property="ajlb_bm" column="ajlb_bm" />
+		<result property="ajlb_mc" column="ajlb_mc" />
+		<result property="cbr" column="cbr" />
+		<result property="cbrgh" column="cbrgh" />
+		<result property="cbbm_bm" column="cbbm_bm" />
+		<result property="cbbm_mc" column="cbbm_mc" />
+		<result property="ajzt" column="ajzt" />
+		<result property="wcrq" column="wcrq" />
+		<result property="gdrq" column="gdrq" />
+		<result property="xyr" column="xyr" />
+		<result property="IsRegard" column="IsRegard" />
+		<result property="tysah" column="tysah" />
+	</resultMap>
+	<resultMap id="queryMap" type ="java.util.HashMap">
+		<result property="bmsah" column="bmsah" />
+		<result property="tysah" column="tysah" />
+	</resultMap>
+	<resultMap id="queryjzjbxxmap" type ="com.dzjz.jzzz.ajjzzz.po.Jzjbxx">
+		<id property="jzbh" column="jzbh" />
+		<id property="bmsah" column="bmsah" />
+		<result  property="tysah" column="tysah" />
+		<result property="sfsc" column="sfsc" />
+		<result property="zhxgsj" column="zhxgsj" />
+		<result property="jzmc" column="jzmc" />
+		<result property="accomplices" column="accomplices" />
+		<result property="ajmb_bm" column="ajmb_bm" />
+		<result property="ajmb_mc" column="ajmb_mc" />
+	</resultMap>
+	<resultMap id="queryajjbxxmap" type ="com.common.po.Ajjbxx">
+		<id property="bmsah" column="bmsah" />
+		<result  property="tysah" column="tysah" />
+		<result property="cbdw_bm" column="cbdw_bm" />
+		<result property="cbdw_mc" column="cbdw_mc" />
+		<result property="zhxgsj" column="zhxgsj" />
+		<result property="ajmc" column="ajmc" />
+		<result property="ajlb_bm" column="ajlb_bm" />
+		<result property="ajlb_mc" column="ajlb_mc" />
+		<result property="taryxx" column="taryxx" />
+	</resultMap>
+	
+	<!--通过条件查询部门信息 -->
+	<select id="queryByMap" resultMap="ajjbxxMap" parameterType= "java.util.HashMap">
+	<![CDATA[  
+			SELECT
+ Ro,IsRegard,AJMC,BMSAH,AJLB_MC,CBDW_MC,CBBM_MC,CBR,DQJD,SLRQ,AJZT,DQRQ,BJRQ,WCRQ,GDRQ,AJLB_BM,CBDW_BM,XYR,SFZH,TARYXX ,TYSAH
+FROM (SELECT ROW_NUMBER()OVER(order by T.SLRQ DESC)AS Ro,IsRegard,T.AJMC,T.BMSAH,T.AJLB_MC,T.CBDW_MC,T.CBBM_MC,T.CBR,T.DQJD,T.SLRQ,T.AJZT,T.DQRQ,T.BJRQ,T.WCRQ,T.GDRQ,T.AJLB_BM,T.CBDW_BM,T.SFSC,
+T.XYR,T.SFZH,T.TARYXX,T.TYSAH
+from(select 
+     (select count(1) from yx_dzjz_jzjbxx y where
+     (to_char(y.jzxgh) <> '0'and y.jzxgh is not null) and y.Bmsah=d.Bmsah and y.sfsc='N') 
+     IsRegard,AJMC,BMSAH,AJLB_MC,CBDW_MC,CBBM_MC,CBR,DQJD,SLRQ,AJZT,DQRQ,BJRQ,WCRQ,GDRQ,AJLB_BM,CBDW_BM,SFSC,XYR,SFZH,TARYXX ,TYSAH
+     from TYYW_GG_AJJBXX d where SFSC='N') T WHERE 1=1 and SLRQ >to_date(#{slrq},'yyyy-mm-dd')  and SFSC='N' and CBDW_BM in
+     (select trim(QXBM) from xt_dm_qx a join XT_QX_RYJSFP b on trim(a.jsbm)=b.jsbm and trim(a.bmbm)=b.bmbm and trim(a.dwbm)=b.dwbm 
+     and gh=#{gh} and b.dwbm=#{dwbm} and a.qxlx=0) and AJLB_BM in
+     (select trim(QXBM) from xt_dm_qx a join XT_QX_RYJSFP b on trim(a.jsbm)=b.jsbm and trim(a.bmbm)=b.bmbm and trim(a.dwbm)=b.dwbm
+     and gh=#{gh} and b.dwbm=#{dwbm} and a.qxlx=1)) TT 
+			]]>
+	</select>
+	<select id="queryByMapBmsahId" resultMap="queryMap">
+			select t2.bmsah from yx_dzjz_jzjbxx t2 where t2.dwbm=#{dwbm} and t2.jzscrgh=#{gh} and t2.bmsah=(
+				select max(t.bmsah) from yx_dzjz_jzjbxx t where t.dwbm=#{dwbm} and t.jzscrgh=#{gh} and t.bmsah like #{bmsah})
+	</select>
+	<select id="queryByMapTysahId" resultMap="queryMap">
+			select t2.tysah from yx_dzjz_jzjbxx t2 where t2.dwbm=#{dwbm} and t2.jzscrgh=#{gh} and t2.tysah=(
+				select max(t.tysah) from yx_dzjz_jzjbxx t where t.dwbm=#{dwbm} and t.jzscrgh=#{gh} and t.bmsah like #{tysah})
+	</select>
+	<select id="jzjbxxByBmsahAndTysah" resultMap="queryjzjbxxmap">
+			select t.jzbh,t.sfsc,t.zhxgsj,t.bmsah,t.tysah,t.jzmc,t.accomplices,t.ajmb_bm,t.ajmb_mc 
+				from yx_dzjz_jzjbxx t 
+			where t.bmsah=#{bmsah} and t.tysah=#{tysah} 
+	</select>
+	<select id="ajjbxxByBmsahAndTysah" resultMap="queryajjbxxmap">
+			select t.bmsah,t.tysah,t.cbdw_bm,t.cbdw_mc,t.zhxgsj,t.ajmc,t.ajlb_bm,t.ajlb_mc,t.taryxx
+				from tyyw_gg_ajjbxx t 
+			where t.bmsah=#{bmsah} and t.tysah=#{tysah} 
+	</select>
+	
+	<insert id="add_ajzz" parameterType= "java.util.HashMap"  >
+		<![CDATA[
+		insert into yx_dzjz_jzjbxx(
+		jzbh,
+		sfsc,
+		cjsj,
+		zhxgsj,
+		fqdwbm,
+		fql,dwbm,
+		bmsah,
+		tysah,
+		jzmc,
+		jzlj,
+		jzscsj,
+		jzscrgh,
+		jzscrxm,
+		jzms,
+		jzxgh,
+		sfkygx,
+		gxywbmjh,
+		mrsfgkpz, 
+		accomplices, 
+		ajmb_bm, 
+		ajmb_mc, 
+		idnumber, 
+		isrecord, 
+		suspectname
+		)
+ 			values
+  		(
+  		#{jzbh,jdbcType=CHAR},
+  		#{sfsc,jdbcType=CHAR},
+  		to_date(#{cjsj},'yyyy-MM-dd hh24:mi:ss'),
+  		to_date(#{zhxgsj},'yyyy-MM-dd hh24:mi:ss'),
+  		#{fqdwbm,jdbcType=INTEGER},
+  		#{fql,jdbcType=VARCHAR},
+  		#{dwbm,jdbcType=CHAR},
+  		#{bmsah,jdbcType=VARCHAR},
+  		#{tysah,jdbcType=CHAR},
+  		#{jzmc,jdbcType=VARCHAR},
+  		#{jzlj,jdbcType=VARCHAR},
+  		to_date(#{jzscsj},'yyyy-MM-dd hh24:mi:ss'),
+  		#{jzscrgh,jdbcType=CHAR},
+  		#{jzscrxm,jdbcType=VARCHAR},
+  		#{jzms,jdbcType=VARCHAR},
+  		#{jzxgh,jdbcType=VARCHAR},
+  		#{sfkygx,jdbcType=CHAR},
+  		#{gxywbmjh,jdbcType=VARCHAR},
+  		#{mrsfgkpz,jdbcType=CHAR}, 
+  		#{accomplices,jdbcType=VARCHAR}, 
+  		#{ajmb_bm,jdbcType=VARCHAR}, 
+  		#{ajmb_mc,jdbcType=VARCHAR}, 
+  		#{idnumber,jdbcType=VARCHAR}, 
+  		#{isrecord,jdbcType=CHAR}, 
+  		#{suspectname,jdbcType=VARCHAR}
+  		)
+	]]>
+	
+	</insert>
+	<insert id="add_ajjbxx" parameterType= "java.util.HashMap"  >
+		<![CDATA[
+		insert into tyyw_gg_ajjbxx(
+			bmsah, tysah, sfsc, sfygxtsj, cbdw_bm, cbdw_mc, 
+			fqdwbm, fql, cjsj, zhxgsj, slrq, ajmc, ajlb_bm, ajlb_mc, zcjg_dwdm, zcjg_dwmc, ysdw_dwdm, 
+			ysdw_dwmc, yswswh, ysay_aydm, ysay_aymc, ysqtay_aydms, ysqtay_aymcs, cbrgh, cbr, cbbm_bm, 
+			cbbm_mc, ajzt, sfswaj, sfdbaj, zxhd_mc, wcrq, gdrq, gdrgh, gdr, aqzy, dqjd, blksrq, blts, dqrq,bjrq, yjzt, 
+			jyyjzt, jyyjhcqxyrgs, lcslbh, fxdj, sfgzaj, fz, ysyj_dm, ysyj_mc, sfjbaj, 
+			zxhd_dm, dqyjjd, yascssjd_dm, yascssjd_mc, ysrjdh, ajly_dm, ajly_mc, 
+			xyr, sfzh, taryxx, shr, shsj, zjs, djj, zys
+		)
+ 			values
+	  		
+  		(
+	  		#{bmsah,jdbcType=VARCHAR}, #{tysah,jdbcType=CHAR}, #{sfsc,jdbcType=CHAR}, #{sfygxtsj,jdbcType=CHAR}, #{cbdw_bm,jdbcType=CHAR}, #{cbdw_mc,jdbcType=VARCHAR},
+	  		#{fqdwbm,jdbcType=INTEGER}, #{fql,jdbcType=VARCHAR},to_date(#{cjsj},'yyyy-MM-dd hh24:mi:ss'),to_date(#{zhxgsj},'yyyy-MM-dd hh24:mi:ss'),to_date(#{slrq},'yyyy-MM-dd hh24:mi:ss'),
+	  		#{ajmc,jdbcType=VARCHAR}, #{ajlb_bm,jdbcType=CHAR}, #{ajlb_mc,jdbcType=VARCHAR}, #{zcjg_dwdm,jdbcType=CHAR}, #{zcjg_dwmc,jdbcType=VARCHAR}, #{ysdw_dwdm,jdbcType=CHAR}, 
+	  		#{ysdw_dwmc,jdbcType=VARCHAR},  #{yswswh,jdbcType=VARCHAR},  #{ysay_aydm,jdbcType=CHAR},  #{ysay_aymc,jdbcType=VARCHAR},  #{ysqtay_aydms,jdbcType=VARCHAR}, 
+	  		#{ysqtay_aymcs,jdbcType=VARCHAR},#{cbrgh,jdbcType=CHAR},#{cbr,jdbcType=VARCHAR},#{cbbm_bm,jdbcType=CHAR},
+	  		#{cbbm_mc,jdbcType=VARCHAR},#{ajzt,jdbcType=CHAR}, #{sfswaj,jdbcType=CHAR},#{sfdbaj,jdbcType=CHAR},#{zxhd_mc,jdbcType=VARCHAR},
+	  		to_date(#{wcrq},'yyyy-MM-dd hh24:mi:ss'),to_date(#{gdrq},'yyyy-MM-dd hh24:mi:ss'),#{gdrgh,jdbcType=CHAR}, #{gdr,jdbcType=VARCHAR},#{aqzy,jdbcType=VARCHAR},#{dqjd,jdbcType=VARCHAR}, 
+	  		to_date(#{blksrq},'yyyy-MM-dd hh24:mi:ss'),#{blts,jdbcType=INTEGER},to_date(#{dqrq},'yyyy-MM-dd hh24:mi:ss'),to_date(#{bjrq},'yyyy-MM-dd hh24:mi:ss'),#{yjzt,jdbcType=CHAR},
+	  		#{jyyjzt,jdbcType=CHAR},#{jyyjhcqxyrgs,jdbcType=INTEGER},#{lcslbh,jdbcType=CHAR}, #{fxdj,jdbcType=CHAR},#{sfgzaj,jdbcType=CHAR},
+	  		#{fz,jdbcType=VARCHAR},#{ysyj_dm,jdbcType=CHAR},#{ysyj_mc,jdbcType=VARCHAR}, #{sfjbaj,jdbcType=CHAR},
+	  		
+	  		#{zxhd_dm,jdbcType=CHAR},#{dqyjjd,jdbcType=VARCHAR},#{yascssjd_dm,jdbcType=CHAR}, #{yascssjd_mc,jdbcType=VARCHAR},#{ysrjdh,jdbcType=VARCHAR},
+	  		#{ajly_dm,jdbcType=CHAR}, #{ajly_mc,jdbcType=VARCHAR}, #{xyr,jdbcType=VARCHAR},#{sfzh,jdbcType=VARCHAR},#{taryxx,jdbcType=VARCHAR},#{shr,jdbcType=VARCHAR},
+	  		to_date(#{shsj},'yyyy-MM-dd hh24:mi:ss'),#{zjs,jdbcType=INTEGER},#{djj,jdbcType=VARCHAR},#{zys,jdbcType=INTEGER}
+  		)
+	]]>
+	
+	</insert>
+<!-- 	//卷宗制作添加参数 -->
+	<insert id="add" parameterType="com.common.po.AjCspz"  >
+	 <selectKey keyProperty="csbh" resultType="String" order="BEFORE">
+        select sys_guid() from dual
+    </selectKey>
+		<![CDATA[
+		insert into XT_DZJZ_ZZCS(
+		csbh, 
+		cskey, 
+		csvalue, 
+		dysj, 
+		fzbs
+		)
+ 			values
+  		(
+  		#{csbh,jdbcType=VARCHAR},
+  		#{cskey,jdbcType=VARCHAR},
+  		#{csvalue,jdbcType=VARCHAR},
+  		#{dysj,jdbcType=DATE},
+  		#{fzbs,jdbcType=VARCHAR}
+  		
+  		)
+	]]>
+	</insert>
+	<update id="updateajjbxx" parameterType="com.common.po.Ajjbxx">
+			update tyyw_gg_ajjbxx t  set t.zhxgsj=#{zhxgsj},t.ajmc=#{ajmc},t.ajlb_bm=#{ajlb_bm},t.ajlb_mc=#{ajlb_mc},t.taryxx=#{taryxx}  where  t.bmsah=#{bmsah} and t.tysah=#{tysah} 
+	</update>
+	<update id="updatejzjbxx" parameterType="com.dzjz.jzzz.ajjzzz.po.Jzjbxx">
+			update yx_dzjz_jzjbxx t  set t.zhxgsj=to_date(#{zhxgsj},'yyyy-MM-dd hh24:mi:ss'),t.jzmc=#{jzmc},t.ajmb_bm=#{ajmb_bm},t.ajmb_mc=#{ajmb_mc},t.accomplices=#{accomplices}  where  t.bmsah=#{bmsah} and t.tysah=#{tysah} 
+	</update>
+</mapper>

@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dzjz.jzyj.dao.LsajbdDao">
+	<resultMap id="lsajbdMap" type="com.dzjz.jzyj.po.Lsajbd">
+		<id property="yjxh" column="yjxh" />
+		<result property="gh" column="gh" />
+		<result property="dwbm" column="dwbm" />
+		<result property="mc" column="mc" />
+		<result property="bmsah" column="bmsah" />
+		<result property="ajlbbm" column="ajlbbm" />
+		<result property="ajlbmc" column="ajlbmc" />
+		<result property="yjkssj" column="yjkssj" />
+		<result property="yjjssj" column="yjjssj" />
+		<result property="yjzh" column="yjzh" />
+		<result property="yjmm" column="yjmm" />
+		<result property="jdsj" column="jdsj" />
+		<result property="jdr" column="jdr" />
+		<result property="jdrgh" column="jdrgh" />
+		<result property="jdbmbm" column="jdbmbm" />
+		<result property="jdbmmc" column="jdbmmc" />
+		<result property="jddwbm" column="jddwbm" />
+		<result property="jddwmc" column="jddwmc" />
+		<result property="sfsc" column="sfsc" />
+		<result property="yjsqdh" column="yjsqdh" />
+		<result property="jzztxs" column="jzztxs" />
+	</resultMap>
+	<resultMap id="ajbdMap" type ="java.util.HashMap">
+		<result property="IsRegard" column="IsRegard" />
+		<result property="ajmc" column="ajmc" />
+		<result property="bmsah" column="bmsah" />
+		<result property="ajlb_mc" column="ajlb_mc" />
+		<result property="cbdw_mc" column="cbdw_mc" />
+		<result property="cbbm_mc" column="cbbm_mc" />
+		<result property="cbr" column="cbr" />
+		<result property="dqjd" column="dqjd" />
+		<result property="slrq" column="slrq" />
+		<result property="ajzt" column="ajzt" />
+		<result property="dqrq" column="dqrq" />
+		<result property="bjrq" column="bjrq" />
+		<result property="wcrq" column="wcrq" />
+		<result property="gdrq" column="gdrq" />
+		<result property="ajlb_bm" column="ajlb_bm" />
+		<result property="cbdw_bm" column="cbdw_bm" />
+		<result property="xyr" column="xyr" />
+		<result property="sfzh" column="sfzh" />
+		<result property="taryxx" column="taryxx" />
+		
+	</resultMap>
+	<resultMap id="leftTreeMap" type ="java.util.HashMap">
+		<result property="isleaf" column="isleaf" />
+		<result property="mlbh" column="mlbh" />
+		<result property="fmlbh" column="fmlbh" />
+		<result property="mlxsmc" column="mlxsmc" />
+		<result property="mllx" column="mllx" />
+		<result property="mlsxh" column="mlsxh" />
+		<result property="sfsm" column="sfsm" />
+		<result property="wjmc" column="wjmc" />
+		<result property="wjlj" column="wjlj" />
+		<result property="isexist" column="isexist" />
+	</resultMap>
+	<resultMap id="getPeopleMap" type ="java.util.HashMap">
+		<result property="gh" column="gh" />
+		<result property="dwbm" column="dwbm" />
+		<result property="mc" column="mc" />
+		<result property="dlbm" column="dlbm" />
+		<result property="kl" column="kl" />
+		<result property="yddhhm" column="yddhhm" />
+		<result property="dzyj" column="dzyj" />
+		<result property="gzzh" column="gzzh" />
+		<result property="ydwbm" column="ydwbm" />
+		<result property="ydwmc" column="ydwmc" />
+		<result property="sflsry" column="sflsry" />
+		<result property="sftz" column="sftz" />
+		<result property="sfsc" column="sfsc" />
+		<result property="xb" column="xb" />
+		<result property="caid" column="caid" />
+	</resultMap>
+	<!-- 查询符合条件的数据 -->
+	<select id="queryList" resultMap="lsajbdMap" >
+	<![CDATA[  
+		SELECT  T.*  from YX_DZJZ_LSAJBD T  
+					WHERE 1=1  and SFSC='N'  
+			]]>
+			<if test="jdrgh != null and '' != jdrgh">  
+            <![CDATA[  
+              and T.JDRGH = #{jdrgh} 
+            ]]>  
+            </if>
+			<if test="jddwbm != null and '' != jddwbm">  
+            <![CDATA[  
+               and T.jddwbm=#{jddwbm}  
+            ]]>  
+            </if>
+	</select>
+	<!-- 查询案件列表绑定-->
+	<select id="queryListaj" resultMap="ajbdMap" >
+	<![CDATA[  
+	SELECT IsRegard,AJMC,BMSAH,AJLB_MC,CBDW_MC,CBBM_MC,CBR,DQJD,SLRQ,AJZT,DQRQ,BJRQ,WCRQ,GDRQ,AJLB_BM,CBDW_BM,XYR,SFZH,TARYXX FROM 
+		( SELECT IsRegard,T.AJMC,T.BMSAH,T.AJLB_MC,T.CBDW_MC,T.CBBM_MC,T.CBR,T.DQJD,T.SLRQ,T.AJZT,T.DQRQ,T.BJRQ,T.WCRQ,T.GDRQ,T.AJLB_BM,T.CBDW_BM,T.SFSC,T.XYR,T.SFZH,T.TARYXX  from 
+		(select (select count(1) from yx_dzjz_jzjbxx y where (to_char(y.jzxgh) <> '0' and y.jzxgh is not null ) and y.Bmsah=d.Bmsah and y.sfsc='N') IsRegard,AJMC,BMSAH,AJLB_MC,CBDW_MC,CBBM_MC,CBR,DQJD,SLRQ,AJZT,DQRQ,BJRQ,WCRQ,GDRQ,AJLB_BM,CBDW_BM,SFSC,XYR,SFZH,TARYXX  
+			from TYYW_GG_AJJBXX d where SFSC='N') T  
+		WHERE 1=1  and IsRegard >0  and SFSC='N' and CBDW_BM in(select trim(QXBM) from xt_dm_qx a join XT_QX_RYJSFP b on trim(a.jsbm) = b.jsbm and trim(a.bmbm)=b.bmbm and trim(a.dwbm)=b.dwbm 
+	and gh=#{gh}  and b.dwbm=#{dwbm}  and a.qxlx=0)  and AJLB_BM in ( select trim(QXBM)
+ 		from xt_dm_qx a join XT_QX_RYJSFP b on trim(a.jsbm) = b.jsbm and trim(a.bmbm)=b.bmbm and trim(a.dwbm)=b.dwbm 
+ 	and gh=#{gh} and b.dwbm=#{dwbm} and a.qxlx=1)  ) TT
+
+			]]>
+	</select>
+	<!-- 左侧树型结构-->
+	<select id="queryListleftTree" resultMap="leftTreeMap" >
+	<![CDATA[  
+	select distinct CONNECT_BY_ISLEAF ISLEAF,MLBH,FMLBH,MLXSMC,MLLX,MLSXH,SFSM,WJMC,WJLJ, ISEXIST  from
+ 	( select MLBH,FMLBH,MLXSMC,MLLX,MLSXH,SFSM,'' WJMC,'' WJLJ,NULL ISEXIST  from YX_DZJZ_JZML  
+ 		where 1=1  and SFSC='N' and BMSAH=#{bmsah}  
+ union all  
+ 	select WJXH MLBH,MLBH FMLBH,WJXSMC,'4',WJSXH,'' SFSM,WJMC,WJLJ ,NULL from 
+ 	YX_DZJZ_JZMLWJ  where 1=1  and SFSC='N' and BMSAH=#{bmsah} 
+ 	group by WJXH ,MLBH ,WJXSMC,WJSXH,WJMC,WJLJ  ) T 
+  	where 1=1  and level < 3 start with 1=1  and FMLBH is null connect by  FMLBH= prior MLBH  order by mlsxh 
+
+			]]>
+	</select>
+	<!-- 分配人员绑定-->
+	<select id="getPeople" resultMap="getPeopleMap" >
+	<![CDATA[  
+	  SELECT  T.GH,T.DWBM,T.MC,T.DLBM,T.KL,T.YDDHHM,T.DZYJ,T.GZZH,T.YDWBM,T.YDWMC,T.SFLSRY,T.SFTZ,T.SFSC,T.XB,T.CAID 
+   			from XT_ZZJG_RYBM T  WHERE 1=1  and SFSC='N' and DWBM=#{dwbm}
+			]]>
+	</select>
+	<!-- 逻辑删除 -->
+	<update id="delete" parameterType= "java.util.HashMap">
+		<![CDATA[  
+			update YX_DZJZ_LSAJBD set SFSC='Y' where YJXH in (#{yjxh})
+			]]>
+	</update>
+	
+<!-- 	添加 分配案件案件-->
+	<insert id="add_lsajbd" parameterType= "com.dzjz.jzyj.po.Lsajbd" >
+	 <selectKey keyProperty="yjxh" resultType="String" order="BEFORE">
+        select sys_guid() from dual
+    </selectKey>
+	
+	 <![CDATA[
+	     insert into yx_dzjz_lsajbd(gh,bmsah,mc,ajmc,ajlbbm,ajlbmc,yjkssj,yjjssj,yjzh,yjmm,jdsj,jdr,jdrgh,jdbmbm,jdbmmc,jddwbm,jddwmc,sfsc,yjsqdh,yjxh,dwbm) 
+			values 
+		(#{gh},#{bmsah},#{mc},#{ajmc},#{ajlbbm},#{ajlbmc},#{yjkssj},#{yjjssj},#{yjzh},#{yjmm},#{jdsj},#{jdr},#{jdrgh},#{jdbmbm},#{jdbmmc},#{jddwbm},#{jddwmc},#{sfsc},#{yjsqdh},#{yjxh},#{dwbm})
+		
+	       ]]>
+	
+	</insert>
+<!-- 	添加 分配案件文件-->
+	<insert id="add_lsajbdwj" parameterType= "com.dzjz.jzyj.po.Lsajwjfp" >
+	 <selectKey keyProperty="fpbm" resultType="String" order="BEFORE">
+        select sys_guid() from dual
+    </selectKey>
+	 <![CDATA[
+	     insert into yx_dzjz_lsajwjfp(fpbm,yjxh,wjxh,sfsc,addtime) 
+			values 
+		(#{fpbm},#{yjxh},#{wjxh},#{sfsc},#{addtime,jdbcType=DATE})
+	       ]]>
+	
+	</insert>
+	
+</mapper>

@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dzjz.xtpz.qx.dao.YhDao">
+
+	<resultMap id="yhMap" type="com.dzjz.xtpz.qx.po.Yh">
+		<id property="gh" column="gh" />
+		<result property="dlbm" column="dlbm" />
+		<result property="kl" column="kl" />
+		<result property="mc" column="mc" />
+		<result property="gzzh" column="gzzh" />
+		<result property="yddhhm" column="yddhhm" />
+		<result property="dzyj" column="dzyj" />
+		<result property="ydwbm" column="ydwbm" />
+		<result property="ydwmc" column="ydwmc" />
+		<result property="sflsry" column="sflsry" />
+		<result property="sfsc" column="sfsc" />
+		<result property="sftz" column="sftz" />
+		<result property="zp" column="zp" />
+		<result property="xb" column="xb" />
+		<result property="caid" column="caid" />
+		<result property="zrjcggh" column="zrjcggh" />
+		<association property="dwbm" column="dwbm" javaType="com.dzjz.xtpz.dw.po.Dw">
+			<id property="dwbm" column="dwbm"/>
+			<result property="dwmc" column="dwmc" />
+			<result property="fdwbm" column="fdwbm" />
+			<result property="dwjb" column="dwjb" />
+			<result property="sfsc" column="sfsc" />
+			<result property="dwjc" column="dwjc" />
+			<result property="dwsx" column="dwsx" />
+		</association>
+	</resultMap>
+	<resultMap id="ryinfoMap" type="com.dzjz.xtpz.qx.po.YhModel">
+		<result property="dwbm" column="dwbm" />
+		<result property="dwmc" column="dwmc" />
+		<result property="gh" column="gh" />
+		<result property="dlbm" column="dlbm" />
+		<result property="kl" column="kl" />
+		<result property="mc" column="mc" />
+		<result property="gzzh" column="gzzh" />
+		<result property="sfsc" column="sfsc" />
+		<result property="xb" column="xb" />
+		<result property="sftz" column="sftz" />
+		<result property="bmbm" column="bmbm" />
+		<result property="bmmc" column="bmmc" />
+		<result property="jsbm" column="jsbm" />
+		<result property="jsmc" column="jsmc" />
+	</resultMap>
+	<resultMap id="ryjsMap" type="java.util.HashMap">
+		<result property="mc" column="mc" />
+		<result property="bm" column="bm" />
+		<result property="fbm" column="fbm" />
+	</resultMap>
+	<!-- 查询所有用户--><!-- 为降低效率暂时查询370000,权未加入 -->
+	<select id="findAll" resultMap="yhMap" >
+		SELECT t.*, t1.* FROM XT_ZZJG_RYBM t 
+   join XT_ZZJG_DWBM t1 ON t.dwbm=t1.dwbm and t.sfsc='N' and t1.sfsc='N' and t.dwbm='370000'
+	</select>
+	<!-- 通过单位编码,工号查询角色信息 -->
+	<select id ="ryjs" parameterType= "java.util.HashMap"  resultMap="ryjsMap">  
+	      <!--注明statementType="CALLABLE"表示调用存储过程-->  
+	       <![CDATA[
+	            select t5.bmbm bm,t5.bmmc mc,t6.dwbm fbm  from     ( select t2.dwbm,t2.gh,t2.dlbm,t2.mc,t.bmbm,t.jsbm 
+   						from  xt_zzjg_rybm t2  join  xt_qx_ryjsfp t  on t.dwbm=t2.dwbm and t.gh=t2.gh where t.dwbm=#{dwbm}  and t.gh=#{gh})   t6
+              join xt_zzjg_bmbm t5 on t6.dwbm=t5.dwbm and t5.bmbm=t6.bmbm
+     UNION
+             
+    			select t3.jsbm  bm,t3.jsmc bm,t4.bmbm fbm  from     ( select t2.dwbm,t2.gh,t2.dlbm,t2.mc,t.bmbm,t.jsbm 
+   						from  xt_zzjg_rybm t2  join  xt_qx_ryjsfp t  on t.dwbm=t2.dwbm and t.gh=t2.gh where t.dwbm=#{dwbm}  and t.gh=#{gh})   t4
+              join xt_qx_jsbm t3 on t4.dwbm=t3.dwbm and t4.bmbm=t3.bmbm 
+              
+      UNION         
+   			select t2.dwbm bm,t2.dwmc mc, '1' fbm
+    		from  xt_zzjg_dwbm t2 where t2.dwbm =( select t1.dwbm from  xt_zzjg_rybm t1 where t1.dwbm=#{dwbm} and t1.gh=#{gh}) 
+	       ]]>
+	    
+	</select > 
+	<!--通过条件查询人员信息 -->
+	<select id="queryByMap" resultMap="yhMap" >
+	<![CDATA[  
+		     SELECT t.*, t1.* FROM XT_ZZJG_RYBM t 
+   				join XT_ZZJG_DWBM t1 ON t.dwbm=t1.dwbm and t.sfsc='N' and t1.sfsc='N' 
+			]]>
+			<if test="dwbm != null and '' != dwbm">  
+            <![CDATA[  
+              AND t.dwbm=#{dwbm.dwbm}  
+            ]]>  
+            </if>
+			<if test="gh != null and '' != gh">  
+            <![CDATA[  
+              AND t.gh=#{gh}  
+            ]]>  
+            </if>
+			<if test="dlbm != null and '' != dlbm">  
+            <![CDATA[  
+              AND t.dlbm=#{dlbm}  
+            ]]>  
+            </if>
+	</select>
+	<insert id="add" parameterType="com.dzjz.xtpz.qx.po.Yh">
+		INSERT INTO XT_ZZJG_RYBM(
+			dwbm, 
+			gh, 
+			dlbm, 
+			kl, 
+			mc, 
+			gzzh, 
+			yddhhm, 
+			dzyj, 
+			ydwbm, 
+			ydwmc, 
+			sflsry, 
+			sfsc, 
+			sftz, 
+<!-- 			zp,  -->
+			xb, 
+			caid, 
+			zrjcggh
+			)
+		VALUES (
+			#{dwbm.dwbm,jdbcType=CHAR},
+			#{gh,jdbcType=CHAR},
+			#{dlbm,jdbcType=VARCHAR},
+			#{kl,jdbcType=VARCHAR},
+			#{mc,jdbcType=VARCHAR},
+			#{gzzh,jdbcType=VARCHAR},
+			#{yddhhm,jdbcType=VARCHAR},
+			#{dzyj,jdbcType=VARCHAR},
+			#{ydwbm,jdbcType=CHAR},
+			#{ydwmc,jdbcType=VARCHAR},
+			#{sflsry,jdbcType=CHAR},
+			#{sfsc,jdbcType=CHAR},
+			#{sftz,jdbcType=CHAR},
+<!-- 			#{zp,jdbcType=BLOB}, -->
+			#{xb,jdbcType=CHAR},
+			#{caid,jdbcType=VARCHAR},
+			#{zrjcggh,jdbcType=CHAR}
+			)
+	</insert> 
+		<!-- 逻辑删除 -->
+	<update id="delete" parameterType="com.dzjz.xtpz.qx.po.Yh">
+			update XT_ZZJG_RYBM t  set t.sfsc=#{sfsc} where t.dwbm=#{dwbm.dwbm} and t.gh=#{gh}
+	</update>
+		<!-- 重置密码 -->
+	<update id="resetMm" parameterType="com.dzjz.xtpz.qx.po.Yh">
+			update XT_ZZJG_RYBM t  set t.kl=#{kl} ,t.sflsry='Y' where t.dwbm=#{dwbm.dwbm} and t.gh=#{gh}
+	</update>
+		<!-- 修改 -->
+	<update id="update" parameterType="com.dzjz.xtpz.qx.po.Yh">
+			update XT_ZZJG_RYBM t  
+				set 
+					t.mc=#{mc},t.caid=#{caid},t.yddhhm=#{yddhhm},t.dzyj=#{dzyj},t.xb=#{xb},t.sflsry=#{sflsry},t.sftz=#{sftz} 
+				where t.dwbm=#{dwbm.dwbm} and t.gh=#{gh}
+	</update>
+
+		<!-- 查询单位最大值sql可优化 -->
+	<select id="maxId" resultMap="yhMap">
+		select t1.* from XT_ZZJG_RYBM  t1 
+			where t1.dwbm=#{param} and t1.gh= (
+				SELECT max(t.gh) FROM XT_ZZJG_RYBM  t where t.dwbm=#{param}
+				)
+	</select>
+<!-- 	通过单位工号获取人员信息 -->
+	<select id ="ryinfo" parameterType= "java.util.HashMap" resultMap="ryinfoMap" >  
+	     select t4.dwbm,gh,dlbm,kl,mc,gzzh,t4.sfsc,sftz,xb,t4.bmbm,t4.bmmc,t4.jsbm ,t5.jsmc  ,t6.dwmc from (
+			select t1.dwbm,gh,dlbm,kl,mc,gzzh,t1.sfsc,sftz,xb,t1.bmbm,t1.bmmc,jsbm  from xt_zzjg_bmbm t1 
+				join 
+					(select t2.dwbm,t2.gh,t2.dlbm,t2.kl,t2.mc,t2.gzzh,t2.sfsc,t2.sftz,t2.xb,t.bmbm,t.jsbm 
+   						from  xt_zzjg_rybm t2  join  xt_qx_ryjsfp t  on t.dwbm=t2.dwbm and t.gh=t2.gh where t.dwbm=#{dwbm}  and t.gh=#{gh}) t3
+				on t1.bmbm=t3.bmbm and t1.dwbm=t3.dwbm) t4 
+				join xt_zzjg_dwbm t6 on t6.dwbm= t4.dwbm
+		join xt_qx_jsbm t5 on t4.jsbm=t5.jsbm and t4.dwbm=t5.dwbm
+	</select > 
+</mapper>

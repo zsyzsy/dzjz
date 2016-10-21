@@ -1,0 +1,464 @@
+
+<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<%@ taglib uri="/struts-tags" prefix="s" %>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="UTF-8"/>
+  <title>人员权限管理</title>
+
+        <link href="js/ligerUI/skins/Aqua/css/ligerui-all.css" rel="stylesheet" type="text/css" />
+        <script src="js/jquery-1.9.0.min.js" type="text/javascript"></script>   
+    	<script src="js/ligerUI/js/core/base.js" type="text/javascript"></script>
+        <script src="js/ligerUI/js/plugins/ligerLayout.js" type="text/javascript"></script>
+    	<script src="js/ligerUI/js/plugins/ligerTree.js" type="text/javascript"></script>
+    	 <script src="js/ligerUI/js/plugins/ligerGrid.js" type="text/javascript"></script>
+	    <script src="js/ligerUI/js/plugins/ligerResizable.js" type="text/javascript"></script> 
+	    <script src="js/ligerUI/js/plugins/ligerDrag.js"></script>
+	    <script src="js/ligerUI/js/plugins/ligerDialog.js"></script>
+	    <script src="js/ligerUI/js/plugins/ligerMenu.js" type="text/javascript"></script>
+	    <script src="js/ligerUI/js/plugins/ligerMenuBar.js" type="text/javascript"></script>
+	    <script src="js/ligerUI/js/plugins/ligerToolBar.js" type="text/javascript"></script>
+	    <script src="CustomersData.js" type="text/javascript"></script>
+	  <style type="text/css">
+        body{ padding:5px; margin:0; padding-bottom:15px;}
+        #layout1{  width:100%;margin:0; padding:0;  }
+        /*查询*/
+        input {
+            height: 20px;
+            line-height: 20px;
+            outline: none;
+            margin-left: 3px;
+            padding-left: 3px;
+            border: 1px solid #AECAF0;
+        }
+        .sbxx_sbxh {
+            margin-left: 100px;
+        }
+        .sbxx_cx{
+            margin-left: 10px;
+            position: relative;
+        }
+        .sbxx_cx .rzcx_cx{
+            width: 70px;
+            padding-left: 20px;
+            height: 22px;
+            background: url('images/header-bg.gif');
+            line-height: 22px;
+            border: 1px solid #AECAF0;
+        }
+        .sbxx_cx img{
+            position: absolute;
+            left: 10px;
+            top: -1px;
+        }
+        .sbxx_cx .rzcx_cx:hover{
+            cursor: pointer;
+            background: #FFBE76  url("images/button-bg-over.gif")  repeat-x center;;
+            border-color: #D6A886;
+        }
+        /*添加人员权限*/
+        .ryqxgl_gjt{
+            height: 30px;
+            margin-top: 10px;
+            border: 1px solid #AECAF0;
+            border-bottom: none;
+            width: 99%;
+            overflow: hidden;
+            zoom: 1;
+        }
+        .ryqxgl_gjt div{
+            width: 109px;
+            height: 19px;
+            margin-left: 5px;
+            margin-top: 5px;
+            float: left;
+            border: 1px solid #ffffff;
+        }
+        .ryqxgl_gjt div:hover{
+            cursor: pointer;
+            background: url("images/panel-btn.gif" );
+            border-left: 1px solid #9AC6FF;
+            border-right: 1px solid #9AC6FF;
+            border-bottom: 1px solid #9AC6FF;
+            border-radius: 3px;
+
+        }
+        .ryqxgl_gjt div img{
+            vertical-align: middle;
+        }
+        .ryqxgl_gjt .gjt_border{
+            width: 0;
+            float: left;
+            height: 18px;
+            border: 1px solid #9AC6FF;
+            border-left: 1px solid #9AC6FF;
+        }
+        .ryqxgl_gjt span{
+            padding-left: 10px;
+        }
+        .l-tree li .l-body {
+    overflow: hidden;
+    width: 200px;
+}
+ /*******************************************/
+        /*****************功能样式********************/
+        /*******************************************/
+		.l-tree .l-tree-icon-folder-open-0
+        {
+            background: url("images/system.png") no-repeat;
+            background-position: 2px 7px;
+        }
+        .l-tree .l-tree-icon-folder-open-1
+        {
+            background: url("images/zz.png") no-repeat;
+            background-position: 2px 7px;
+        }
+        .l-tree .l-tree-icon-folder-open-2
+        {
+            background: url("images/yj.png") no-repeat;
+            background-position: 2px 7px;
+        }
+        .l-tree .l-tree-icon-folder-open-3
+        {
+            background: url("images/cx.png") no-repeat 5px center;
+        }
+        .l-tree .l-tree-icon-folder-open-4
+        {
+            background: url("images/tj.png") no-repeat 5px center;
+        }
+        .l-tree .l-tree-icon-folder-open-5
+        {
+            background: url("images/yj.png") no-repeat 5px center;
+        }
+      .l-tree   li:last-child .l-tree-icon-leaf{
+                     background: url("images/home.png") no-repeat;
+                     background-position: 2px 7px;
+        }
+         .l-tree .l-children  li:last-child .l-tree-icon-leaf{
+                        background: url('js/ligerUI/skins/Aqua/images/tree/tree.gif');
+                         background-position: -22px -110px;
+        }
+        /*******************************************/
+        .l-tree .l-body span {
+		    margin-top: 3px; 
+		}
+    </style>
+             <script type="text/javascript">
+//      功能
+        var tree;
+        var maingrid;
+        var maingrid5;
+        var ryqxAdd_name;
+        var keyword_name;
+        var dwbm='${sessionScope.yh.dwbm.dwbm}';
+       $(function () {
+           input_ryqx();
+          jQuery.post("ryQxAction!gndyfl",function(data){
+              //转换成tree  json格式
+					var getData =data.rows;
+              //添加左边单位树
+           $("#layout1").ligerLayout({ leftWidth: 220});
+         
+                        tree = $("#tree1").ligerTree({  
+                        data:getData,
+                        nodeWidth:130,
+                        checkbox: false,
+                        idFieldName :'bm',
+                        slide : false,
+                        parentIDFieldName :'fbm',
+                        textFieldName: 'mc',
+                        ajaxType: 'get',
+                        isExpand: false, 
+                        onClick :function(data){
+                            //获取所有选中的数据
+                        	getChecked();
+                       	 getSelected();
+                            }
+                        });
+                       function aa(){
+	                    	   $("div .l-tree .l-tree-icon-folder").each(function(index){
+	                               $(this).addClass("l-tree-icon-folder-open-"+index);
+	                           });
+	                    	   $("div .l-tree .l-tree-icon-folder-open").each(function(index){
+	                               $(this).addClass("l-tree-icon-folder-open-"+index);
+	                           });
+	                    	   $("div .l-tree .l-tree-icon-leaf").each(function(){
+	                    	        $("div .l-tree .l-tree-icon-leaf:last-child").addClass("l-tree-icon-leaf-"+"x");
+
+	                    	    });
+                           };
+                        treeManager = $("#tree1").ligerGetTreeManager(aa());
+       	});
+         
+       });
+       //获取未分配权限多选值
+       function getCheckedTree() {
+       	var notes = tree.getChecked();
+           var text = "";
+//            for (var i = 0; i < notes.length; i++)
+//            {
+//                if(notes[i].data.gnbm.length==10){
+//                    text += notes[i].data.gnbm + ",";
+//                    }
+//            }
+//            return text;
+           }
+       //添加人员权限人员界面选中行信息
+       function getChecked() {
+    	   var a=tree.getChecked();
+    	   $("#gh").val();
+           }
+        //加载右边人员权限表
+        function input_ryqx() {
+            
+//             var dwbm='370000';
+            var ingnbm=$("#gnbm").val();
+        	jQuery.post("ryQxAction!queryRyQxByDwbmGnbm?dwbm="+dwbm+"&&gnbm="+ingnbm,function(data){
+        	maingrid=$("#maingrid").ligerGrid({
+                columns: [
+                    {display: '单位名称', name: 'dwbm.dwbm',   minWidth: 20  } ,
+                    { display: '姓名', name: 'mc', minWidth: 30 },
+                    { display: '登录别名', name: 'dlbm', minWidth: 30 },
+                    { display: '工号', name: 'gh', minWidth: 30 },
+                    { display: '性别', name: 'xb', Width: 60,render:function(e){
+                       	if(e.xb=="0"){
+   							return "女";
+   						}if(e.xb=="1"){
+   							return "男";
+   							}
+                           }
+               		},
+                    { display: '工作证号', name: 'gzzh', minWidth: 20}
+                ], data: data, pageSize:20,enabledSort :true, sortName: 'gh',usePager :true,
+                width: '99%', height: '430px', checkbox: false,rownumbers:true,where : keyword_getWhere(),
+                fixedCellHeight:false,onSelectRow :function(data){
+						$("#dwbm").val(data.dwbm);
+						$("#gnbm").val(data.gnbm);
+						$("#gh").val(data.gh);
+                     }
+            });
+            $("#pageloading").hide();
+        	})
+        };
+
+		//获取树型结构选中值(使用的是单个选中)
+        function getSelected(){
+
+        	var note = treeManager.getSelected();
+        	if(note!=null){
+        	var bm=note.data.bm;
+        	var dwbm=note.data.dwbm; 	        
+					$("#gnbm").val(bm);
+					$("#dwbm").val(dwbm);
+					input_ryqx();	            	
+            	}
+            }
+		//删除人员功能权限
+		function  delete_ryqx(){
+			var dedwbm=$("#dwbm").val();
+			var degnbm=$("#gnbm").val();
+			var degh=$("#gh").val();
+			 $.ajax({
+                 type: "POST",
+                 url: 'ryQxAction!delete_rygnqx',
+                 data: 'dwbm='+dedwbm+"&&gnbm="+degnbm+"&&gh="+degh,
+                 success: function (data) {
+                	 input_ryqx();
+                     }
+             })
+			}
+		  //加载角色人员界面
+        function add_jsry(){
+     	   	var ryjsqxdedwbm=$("#dwbm").val();
+            var ryjsqxdegnbm=$("#gnbm").val();;
+		  
+     	   jQuery.post("ryQxAction!rygnBygnbm?dwbm="+ryjsqxdedwbm+"&&gnbm="+ryjsqxdegnbm,function(data){
+         	  maingrid5= $("#maingrid5").ligerGrid({
+                columns: [
+                    {display: '名称', name: 'mc',  minWidth: 100  } ,
+                    { display: '登录别名', name: 'dlbm', Width: 100 },
+                    { display: '工作证号', name: 'gzzh', Width: 160},
+                    { display: '工号', name: 'gh', Width: 140 },
+                    { display: '性别', name: 'xb', Width: 60,render:function(e){
+                       	if(e.xb=="0"){
+   							return "女";
+   						}if(e.xb=="1"){
+   							return "男";
+   							}
+                           }
+               		},
+                    { display: '姓名', name: 'yddhhm', minWidth: 100 }
+                ], data: data, pageSize: 10, sortName: 'CustomerID',
+                width: '99%', height: '380px', checkbox: false,rownumbers:true,where : add_getWhere(),
+                fixedCellHeight:true,onSelectRow :function(data){
+						$("#gh").val(data.gh);
+                }
+            });
+     	   $("#pageloading1").hide();
+     	   })
+
+            }
+        //添加人员功能权限(目前只支持单独添加)
+        function add_rygnqx1(){
+        		 var addwbm=$("#dwbm").val();
+     			var adgnbm=$("#gnbm").val();
+     			var adgh=$("#gh").val();
+        	 jQuery.post("ryQxAction!add_rygnqx?dwbm="+addwbm+"&&gnbm="+adgnbm+"&&gh="+adgh,function(data){
+//         		 add_rygnqx();
+        		 add_jsry();
+        	 })
+
+            }
+        
+		 //添加人员功能权限界面
+	     function add_rygnqx(){
+		     var note1=treeManager.getSelected();
+		     if(note1!=null){
+	    	 add_jsry();
+	     	$.ligerDialog.open({ title: '添加功能人员信息', target: $('#add_qxrygn'), width: 790,height:500, isResize: false});
+			     }else{
+	            		$.ligerDialog.warn('请先选择一个需要添加的功能');
+             	}
+	     }
+	   // 关键字条件搜索
+	        function keyword_search()
+	        {
+		        var aq=treeManager.getSelected();
+		        if(aq!=null){
+	            var ingnbm=aq.data.bm;
+			        }else{
+			        	 var ingnbm="";
+				        }
+	        	var dwbm='${sessionScope.yh.dwbm.dwbm}';
+	        	jQuery.post("ryQxAction!queryRyQxByDwbmGnbm?dwbm="+dwbm+"&&gnbm="+ingnbm,function(data){
+			       	 maingrid.options.data = data;
+			       	maingrid.loadData(keyword_getWhere());
+	       	 })
+	        }
+	        function keyword_getWhere()
+	        {
+	            if (!maingrid) return null;
+	            var clause = function (rowdata, rowindex)
+	            {
+	                var key = $("#keyword_text").val();
+	                var CBR=rowdata.mc; //  获取部门姓名
+	   		  	 if(CBR==null){
+	   		  			keyword_name=" ";
+	   			  	 }else{
+	   			  		keyword_name=CBR;
+	   				  	 }
+	                return (rowdata.mc.indexOf(key) > -1)||(rowdata.gh.indexOf(key) > -1)||(rowdata.dlbm.indexOf(key) > -1)||(rowdata.gzzh.indexOf(key) > -1) ;
+	            };
+	            return clause; 
+	        }
+	   //添加条件搜索
+	        function add_search()
+	        {
+		        var ryjsqxdedwbm=$("#dwbm").val();
+            	var ryjsqxdegnbm=$("#gnbm").val();;
+  		  
+      	   	jQuery.post("ryQxAction!rygnBygnbm?dwbm="+ryjsqxdedwbm+"&&gnbm="+ryjsqxdegnbm,function(data){
+          	 maingrid5.options.data = data;
+          	maingrid5.loadData(add_getWhere());
+	       	 })
+	        }
+	        function add_getWhere()
+	        {
+	            if (!maingrid5) return null;
+	            var clause = function (rowdata, rowindex)
+	            {
+	                var key = $("#ryqxAdd_name").val();
+	                var CBR=rowdata.yddhhm; //  获取数据承办人姓名
+	   		  	 if(CBR==null){
+	   		  	ryqxAdd_name=" ";
+	   			  	 }else{
+	   			  	ryqxAdd_name=CBR;
+	   				  	 }
+	                var key2 = $("#ryqxAdd_gh").val();
+	                return (ryqxAdd_name.indexOf(key) > -1)&&(rowdata.gh.indexOf(key2) > -1) ;
+	            };
+	            return clause; 
+	        }
+
+
+    </script>
+   
+</head>
+<body style="padding:10px">
+<div id="layout1">
+    <!--左侧-->
+    <div position="left" title="功能">
+
+        <div style="width: 220px;float: left;overflow: auto;">
+            <ul id="tree1" style="width: 200px;height: 580px;overflow: auto;">
+            </ul>
+        </div>
+    </div>
+
+    <!--右侧-->
+    <div position="center" title="部门操作">
+        <div style="margin: 10px">
+                关键字:<input type="text" id="keyword_text"/>
+            <span class="sbxx_cx"><input class="rzcx_cx" type="button" value="查询" onclick="keyword_search()"/>
+            <img src="images/search.gif" alt=""/>
+            </span>
+        </div>
+
+
+
+        <div class="l-loading" style="display:block" id="pageloading"></div>
+        <div class="ryqxgl_gjt" style="display: none">
+            <div>
+                <p onclick="add_rygnqx();"><img src="images/add.gif"  alt=""/><span>添加人员权限</span></p>
+            </div>
+            <div class="gjt_border"></div>
+            <div>
+                <p onclick="delete_ryqx()"><img src="images/delete.gif"  alt=""/><span>删除人员权限</span></p>
+            </div>
+				<!-- 隐藏属性 -->
+        				<s:textfield  style="display:none" id="dwbm" name="dwbm"  />
+        				<s:textfield  style="display:none" id="gnbm" name="gnbm"  />
+        				<s:textfield  style="display:none" id="gh" name="gh"  />
+        </div>
+        <div class="l-clear"></div>
+
+        <div id="maingrid"></div>
+
+        <div style="display:none;">
+
+        </div>
+
+    </div>
+    <!-- 添加人员功能界面 -->
+     <div id="add_qxrygn" style="display: none; margin: 0 auto;">
+		       <div style="margin: 10px">
+		                姓名:<input type="text" id="ryqxAdd_name"/>
+		                工号:<input type="text" id="ryqxAdd_gh"/>
+		            <span class="sbxx_cx">
+		            	<input class="rzcx_cx" type="button" value="查询" onclick="add_search()"/>
+		            	<img src="images/search.gif" alt=""/>
+		            </span>
+		            <span class="sbxx_cx">
+		            	<input type="button" class="rzcx_cx" value="添加"  onclick="add_rygnqx1()"/>
+		            	<img src="images/search.gif" alt=""/>
+		            </span>
+		            
+		        </div>
+		        <div class="l-loading" style="display:block" id="pageloading1"></div>
+		        <div class="l-clear"></div>
+		        <div id="maingrid5"></div>
+		        <div style="display:none;"> </div>
+
+
+</div>
+
+</div>
+</body>
+</html>

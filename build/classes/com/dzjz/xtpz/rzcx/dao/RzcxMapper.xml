@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dzjz.xtpz.rzcx.dao.RzcxDao">
+
+	<resultMap id="rzcxMap" type="com.dzjz.xtpz.rzcx.po.Rzcx">
+		<id property="xh" column="xh" />
+		<result property="dwbm" column="dwbm" />
+		<result property="dwmc" column="dwmc" />
+		<result property="bmbm" column="bmbm" />
+		<result property="czrgh" column="czrgh" />
+		<result property="czr" column="czr" />
+		<result property="czsj" column="czsj" />
+		<result property="czip" column="czip" />
+		<result property="czlx" column="czlx" />
+		<result property="rznr" column="rznr" />
+		<result property="czajbmsah" column="czajbmsah" />
+		<result property="fql" column="fql" />
+	</resultMap>
+
+	<!--通过条件查询部门信息 -->
+	<select id="queryByMap" resultMap="rzcxMap" >
+	<![CDATA[  
+		     SELECT t.* FROM yx_dzjz_jzrzjl_20160518 t  
+		     	where 1=1
+   				
+			]]>
+			<if test="dwbm != null and '' != dwbm">  
+            <![CDATA[  
+              AND t.dwbm=#{dwbm}  
+            ]]>  
+            </if>
+			<if test="bmbm != null and '' != bmbm">  
+            <![CDATA[  
+              AND t.bmbm=#{bmbm}  
+            ]]>  
+            </if>
+	</select>
+	<insert id="add" parameterType="com.dzjz.xtpz.rzcx.po.Rzcx">
+		<selectKey keyProperty="xh" resultType="String" order="BEFORE">
+	        select sys_guid() from dual
+	    </selectKey>
+		INSERT INTO yx_dzjz_jzrzjl_20160518(
+				xh, 
+				dwbm, 
+				dwmc, 
+				bmbm, 
+				bmmc, 
+				czrgh, 
+				czr, 
+				czsj, 
+				czip, 
+				czlx, 
+				rznr, 
+				czajbmsah, 
+				fql
+			)
+		VALUES (
+			#{xh,jdbcType=VARCHAR},
+			#{dwbm,jdbcType=CHAR},
+			#{dwmc,jdbcType=VARCHAR},
+			#{bmbm,jdbcType=CHAR},
+			#{bmmc,jdbcType=VARCHAR},
+			#{czrgh,jdbcType=CHAR},
+			#{czr,jdbcType=VARCHAR},
+			#{czsj},
+			#{czip,jdbcType=VARCHAR},
+			#{czlx,jdbcType=CHAR},
+			#{rznr,jdbcType=VARCHAR},
+			#{czajbmsah,jdbcType=VARCHAR},
+			#{fql,jdbcType=CHAR}
+			)
+	</insert> 
+	
+</mapper>

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dzjz.xtpz.qx.dao.RyQxDao">
+<resultMap id="QxyhMap" type="com.dzjz.xtpz.qx.po.Yh">
+		<id property="gh" column="gh" />
+		<result property="dlbm" column="dlbm" />
+		<result property="kl" column="kl" />
+		<result property="mc" column="mc" />
+		<result property="gzzh" column="gzzh" />
+		<result property="yddhhm" column="yddhhm" />
+		<result property="dzyj" column="dzyj" />
+		<result property="ydwbm" column="ydwbm" />
+		<result property="ydwmc" column="ydwmc" />
+		<result property="sflsry" column="sflsry" />
+		<result property="sfsc" column="sfsc" />
+		<result property="sftz" column="sftz" />
+		<result property="zp" column="zp" />
+		<result property="xb" column="xb" />
+		<result property="caid" column="caid" />
+		<result property="zrjcggh" column="zrjcggh" />
+		<association property="dwbm" column="dwbm" javaType="com.dzjz.xtpz.dw.po.Dw">
+			<id property="dwbm" column="dwbm"/>
+			<result property="dwmc" column="dwmc" />
+			<result property="fdwbm" column="fdwbm" />
+			<result property="dwjb" column="dwjb" />
+			<result property="sfsc" column="sfsc" />
+			<result property="dwjc" column="dwjc" />
+			<result property="dwsx" column="dwsx" />
+		</association>
+	</resultMap>
+	<resultMap id="yhjsMap" type="java.util.HashMap">
+		<result property="gh" column="gh" />
+		<result property="dwbm" column="dwbm" />
+		<result property="mc" column="mc" />
+		<result property="dlbm" column="dlbm" />
+		<result property="yddhhm" column="yddhhm" />
+		<result property="xb" column="xb" />
+		<result property="gzzh" column="gzzh" />
+		<result property="gnmc" column="gnmc" />
+		<result property="gnbm" column="gnbm" />
+	</resultMap>
+	<resultMap id="gndyflMap" type="java.util.HashMap">
+		<result property="mc" column="mc" />
+		<result property="bm" column="bm" />
+		<result property="dwbm" column="dwbm" />
+		<result property="fbm" column="fbm" />
+	</resultMap>
+	<!--加载左边功能定义分类树型结够-->
+	<select id="gndyfl" resultMap="gndyflMap" >
+	<![CDATA[  
+		    select flbm bm ,flmc mc ,fflbm fbm,dwbm dwbm from xt_qx_gnfl fl where fl.sfsc='N' 
+				union
+			select gnbm bm ,gnmc mc ,flbm fbm ,dwbm dwbm from xt_qx_gndy dy where dy.sfsc='N' 
+    
+			]]>
+	</select>
+	<select id="queryRyQxByDwbmGnbm" resultMap="QxyhMap" >
+	  select * from xt_zzjg_rybm c where c.sfsc='N' and  c.dwbm=#{dwbm} and c.gh in 
+                (select b.gh from 
+                        (select dwbm,jsbm,bmbm from XT_QX_JSGNFP t where t.dwbm=#{dwbm} 
+                         <if test="gnbm != null and '' != gnbm">  
+				            <![CDATA[  
+				               and t.gnbm =#{gnbm}   
+				             ]]>  
+				         </if>
+                      
+                       ) a 
+                  join xt_qx_ryjsfp b on a.dwbm =b.dwbm and a.jsbm=b.jsbm and a.bmbm=b.bmbm)
+	
+	</select>
+	<select id="queryRyQxByDwbmGnbm2" resultMap="QxyhMap" >
+	  select * from xt_zzjg_rybm c where c.sfsc='N' and  c.dwbm=#{dwbm} and c.gh in 
+                (select b.gh from 
+                         (
+	                         select dwbm,jsbm,bmbm from XT_QX_JSGNFP t where t.dwbm=#{dwbm} 
+	                        and t.gnbm in (select d.gnbm from  xt_qx_gndy d where  d.sfsc='N' and d.flbm=#{gnbm})  
+	                          
+                         ) a 
+                  join xt_qx_ryjsfp b on a.dwbm =b.dwbm and a.jsbm=b.jsbm and a.bmbm=b.bmbm)
+	
+	</select>
+	<!--通过条件查询人员信息 -->
+	<select id="queryByMap" resultMap="yhjsMap" >
+	<![CDATA[  
+		     SELECT * FROM ( 
+       			 SELECT ROW_NUMBER() OVER (order by T.GH desc)AS Ro, T.GH,T.DWBM,T.MC,T.DLBM,T.KL,T.YDDHHM,T.DZYJ,T.GZZH,T.YDWBM,T.YDWMC,T.SFLSRY,T.SFTZ,T.SFSC,T.XB,T.CAID,c.GNBM,c.GNMC  
+       		from XT_ZZJG_RYBM T 
+       		right join xt_qx_rygnfp b on T.dwbm=b.dwbm and T.gh=b.gh 
+       		 ]]>
+       		<if test="gnbm != null and '' != gnbm">  
+	            <![CDATA[  
+	               AND b.gnbm=#{gnbm}   
+	             ]]>  
+	            </if>
+	            <![CDATA[ 
+       		left join xt_qx_gndy c on b.gnbm=c.gnbm WHERE 1=1  and T.SFSC='N' and b.DWBM=#{dwbm} ) TT 
+    
+			]]>
+	</select>
+	
+<!-- 	通过功能编码查询未分配该功能的人员 -->
+	<select id="rygnBygnbm" resultMap="yhjsMap" >
+	 SELECT T.GH,T.DWBM,T.MC,T.DLBM,T.KL,T.YDDHHM,T.DZYJ,T.GZZH,T.YDWBM,T.YDWMC,T.SFLSRY,T.SFTZ,T.SFSC,T.XB,T.CAID  from XT_ZZJG_RYBM T 
+ 		WHERE 1=1  and T.SFSC='N' and T.DWBM=#{dwbm} and T.SFTZ='N' and t.gh not in 
+ 	(select t2.gh from XT_QX_RYGNFP t2 where  t2.dwbm=#{dwbm} and t2.gnbm=#{gnbm}) 
+	</select>
+	<!-- 添加人员功能权限 -->
+	<insert id="add_rygnqx" parameterType= "java.util.HashMap"  >
+		<![CDATA[
+			insert into XT_QX_RYGNFP
+				(dwbm,gh,gnbm,bmbm,gncs,bz) 
+			values
+				(#{dwbm,jdbcType=CHAR},
+				 #{gh,jdbcType=CHAR},
+				 #{gnbm,jdbcType=VARCHAR},
+				'0', '', '')
+	]]>
+	
+	</insert>
+	<delete id="delete_rygnqx" parameterType= "java.util.HashMap">
+			delete  from XT_QX_RYGNFP t where t.dwbm=#{dwbm}   and t.gh=#{gh}   AND t.gnbm=#{gnbm}  
+	
+	</delete>
+	
+</mapper>

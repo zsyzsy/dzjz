@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dzjz.xtpz.gnfl.dao.GnflDao">
+	<resultMap id="gnflMap" type="com.dzjz.xtpz.gnfl.po.Gnfl">
+		<id property="flmc" column="flmc" />
+		<result property="fflbm" column="fflbm" />
+		<result property="flxh" column="flxh" />
+		<result property="dwjb" column="dwjb" />
+		<result property="sfsc" column="SFSC" />
+		<result property="dwbm" column="dwbm" />
+		<result property="urldz" column="urldz" />
+	</resultMap>
+
+	
+	<!-- 查询所有部门 -->
+	<select id="findAll" resultMap="gnflMap" >
+		SELECT t.* FROM XT_QX_GNFL t 
+   			where  t.sfsc='N' 
+	</select>
+	<!-- 查询单位最大值 -->
+	<select id="maxId" resultMap="gnflMap" >
+		select t1.* from XT_QX_GNFL  t1 
+			where t1.flbm= (
+				SELECT max(t.flbm) FROM XT_QX_GNFL  t 
+				)
+	</select>
+	<!-- 查询符合条件的数据 --><!-- 数据少暂不单独写 -->
+	<select id="queryByMap" resultMap="gnflMap" >
+	<![CDATA[  
+		select t1.* from XT_QX_GNFL  t1 where t1.sfsc='N'
+			]]>
+			
+			<if test="flbm != null and '' != flbm">  
+            <![CDATA[  
+              AND t1.flbm=#{flbm}  
+            ]]>  
+            </if>
+	</select>
+	<update id="update" parameterType="com.dzjz.xtpz.gnfl.po.Gnfl">
+			update XT_QX_GNFL t set t.flmc=#{flmc} ,t.flxh=#{flxh} where  t.flbm=#{flbm}
+	
+	</update>
+	<update id="delete" parameterType="com.dzjz.xtpz.gnfl.po.Gnfl">
+			update XT_QX_GNFL t set t.sfsc=#{sfsc}  where  t.flbm=#{flbm}
+	
+	</update>
+	<insert id="add" parameterType="com.dzjz.xtpz.gnfl.po.Gnfl">
+		INSERT INTO XT_QX_GNFL(
+			flbm, 
+			flmc, 
+			fflbm, 
+			flxh, 
+			sfsc, 
+			dwbm, 
+			urldz
+			)
+		VALUES (
+			#{flbm,jdbcType=CHAR},
+			#{flmc,jdbcType=VARCHAR},
+			#{fflbm,jdbcType=CHAR},
+			#{flxh,jdbcType=INTEGER},
+			#{sfsc,jdbcType=CHAR},
+			#{dwbm,jdbcType=CHAR},
+			#{urldz,jdbcType=VARCHAR}
+			)
+	</insert> 
+</mapper>
